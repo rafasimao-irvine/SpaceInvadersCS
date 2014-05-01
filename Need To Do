@@ -1,14 +1,7 @@
-Invaders:
-Make invaders have collisions in Brian's invaders. Done
-RNG for Invaders so they can shoot at different times. Done
-Invaders all spawn in a block. Done
-When all invaders in a block are killed, spawn a new block with more difficulty Done
-	(faster, more Invaders, etc)
+Players are all running the game
 
-Players:
-Players should be deleted at 0 lives. Display "Game Over" screen if no players remain. Done
-What about if we keep track of lives on the player them self instead of on the side? Done
-	(so that its easier to see/keep track of when more players are added)
+When the player has an input it sends a message to the server that 
+relays that to every other client.
 
-Other:
-Keep track of score. Done
+When the player's projectile hits an invader in the server checks 
+if it still is the list of invaders (if the projectile actually hit)
