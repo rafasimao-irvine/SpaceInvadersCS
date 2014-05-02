@@ -5,3 +5,20 @@ relays that to every other client.
 
 When the player's projectile hits an invader in the server checks 
 if it still is the list of invaders (if the projectile actually hit)
+
+
+Tasks:
+Client
+- Create a connection between the client and the server; Clients join right away;
+- Send input messages to the server; 
+- Receive other players inputs;
+- Display the other players;
+ - Change players colors;
+- Create the 5 secs immunity;
+
+Server
+- Broadcast the players inputs;
+- Authenticate the projectile collisions;
+- Send the invaders changing directions messages;
+- Send the shoots from the invaders;
+- Keep the scores and send them to the players when it changes;
