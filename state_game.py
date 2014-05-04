@@ -17,7 +17,7 @@ class StateGame(State):
         State.__init__(self, screen, inputManager)
         inputManager.attach(self.player)
         
-        self.board_bounds = pygame.Rect(0,0,950,600)
+        self.board_bounds = pygame.Rect(0,0,screen.get_width(),screen.get_height())
         
         self.fontObj = pygame.font.Font('freesansbold.ttf', 22)
         

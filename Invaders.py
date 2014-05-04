@@ -89,7 +89,7 @@ class Invaders(GameObject):
         if self.timeSinceLastShot > self.shotDelay:
             self.timeSinceLastShot = 0
             
-            self.projectile_list.append(Projectile(self.box.x+12.25, self.box.y+15, 2.5))
+            self.projectile_list.append(Projectile(self.box.x+12.25, self.box.y+15, 0.4))
         
         #increases the fire time    
         else:

@@ -25,7 +25,7 @@ class Player(GameObject, InputListener):
         self._shoot()
         if self.projectile_list.__len__() > 0: 
             for shot in self.projectile_list:
-                shot.move()
+                shot.update(dt)
         if self.fire_delay < 15:
             self.fire_delay += 1
             
@@ -39,7 +39,7 @@ class Player(GameObject, InputListener):
     'Allows the player to fire projectiles if correct button is pressed'
     def _shoot(self):
         if self.fire_shot and self.fire_delay == 15:
-            projectile = Projectile(self.box.left+22.5, self.box.top, -2.5)
+            projectile = Projectile(self.box.left+22.5, self.box.top, -0.4)
             self.projectile_list.append(projectile)
             #print(self.projectile_list.__len__())
             self.fire_delay = 0

@@ -14,11 +14,11 @@ class Projectile(GameObject):
         #self.x = xpos
         #self.y = ypos
         self.speed = speed
-        self.dt = 5
+        #self.dt = 5
     
     'Moves the Projectile'
-    def move(self):
-        self.box.top += self.speed*self.dt
+    def update(self, dt):
+        self.box.top += self.speed*dt
 
     'Draws the Projectile in the screen'
     def render(self, color, screen):

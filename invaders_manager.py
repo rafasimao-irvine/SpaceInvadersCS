@@ -35,7 +35,7 @@ class InvadersManager():
     def update_projectiles(self, dt):
         if self.projectile_list.__len__() > 0: 
             for shot in self.projectile_list:
-                shot.move()
+                shot.update(dt)
                 
     def update_invaders(self, dt):
         if self.invaders_list.__len__() > 0: 
