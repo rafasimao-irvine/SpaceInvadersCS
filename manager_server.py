@@ -17,7 +17,7 @@ class Manager:
     
     screen  = pygame.display.set_mode(size)
 
-    #pygame.display.set_caption("SpaceInvaders")        
+    pygame.display.set_caption("SpaceInvaders")        
     
     #InputManager
     inputManager = InputManager()
@@ -26,7 +26,7 @@ class Manager:
     state = StateGameServer(screen, inputManager)
      
     #Game started check
-    game_started = False
+    game_started = True
     #Main Loop
     def _run(self):
         self.gameOn = True
@@ -42,7 +42,7 @@ class Manager:
                 self.update(dt)
                 
             #Renders, put in the screen
-            #self.render()
+            self.render()
         
     
     #Update

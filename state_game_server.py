@@ -46,25 +46,27 @@ class StateGameServer(State):
                 #If it is out of the board game box, it is removed
                 if not self._remove_if_out_of_board(self.invader_manager.projectile_list, shot):
                     #If it collides with the player, the player receives the damage and the projectile is removed
-                    if shot.is_colliding_with(self.player):
-                        self.player.receive_hit()
-                        self.invader_manager.projectile_list.remove(shot)
+                    for player in self.players_list:
+                        if shot.is_colliding_with(player):
+                            #self.player.receive_hit()
+                            self.invader_manager.projectile_list.remove(shot)
 
     'Make players projectiles collisions and perform the consequences'
     def _treat_player_projectiles(self):
-        if self.player.projectile_list.__len__() > 0: 
-            #Goes through all the invaders projectiles
-            for shot in self.player.projectile_list:
-                #If it is out of the board game box, it is removed
-                if not self._remove_if_out_of_board(self.player.projectile_list, shot):
-                    collided = False
-                    for invader in self.invader_manager.invaders_list:
-                        if not collided and shot.is_colliding_with(invader):
-                            self.player.projectile_list.remove(shot)
-                            self.invader_manager.invaders_list.remove(invader)
-                            self.player.increase_score(15)
-                            #self.invader_manager.speedUp()
-                            collided = True
+        for player in self.players_list:
+            if player.projectile_list.__len__() > 0: 
+                #Goes through all the invaders projectiles
+                for shot in player.projectile_list:
+                    #If it is out of the board game box, it is removed
+                    if not self._remove_if_out_of_board(player.projectile_list, shot):
+                        collided = False
+                        for invader in self.invader_manager.invaders_list:
+                            if not collided and shot.is_colliding_with(invader):
+                                player.projectile_list.remove(shot)
+                                self.invader_manager.invaders_list.remove(invader)
+                                player.increase_score(15)
+                                #self.invader_manager.speedUp()
+                                collided = True
                         
                     
     'Removes a projectile from a projectile list if it is out of the board bounds.' 
