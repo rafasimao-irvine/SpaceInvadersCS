@@ -3,6 +3,8 @@ from input_manager import InputManager
 from state_game_intro import StateGameIntro
 from state_game import StateGame
 
+from client import *
+
 #initiate the pygame
 pygame.init()
 fpsClock = pygame.time.Clock()
@@ -77,6 +79,7 @@ class Manager:
 if "__main__" == __name__:
                 
     manager = Manager()
+    start_client()
     manager._run()
 
     
