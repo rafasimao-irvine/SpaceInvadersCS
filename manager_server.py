@@ -71,6 +71,6 @@ class Manager:
 
 #Run the main loop
 if "__main__" == __name__:
-                
+           
     manager = Manager()
     manager._run()
