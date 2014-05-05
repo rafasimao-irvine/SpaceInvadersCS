@@ -31,7 +31,7 @@ class StateGame(State, NetworkListener):
         
     def destroy(self):
         self.networkConnector.detach(self)
-        self.networkConnector.do_send({'left':self.player.player_id})
+        self.networkConnector.send_msg({'left':self.player.player_id})
     
     
     '''Update'''

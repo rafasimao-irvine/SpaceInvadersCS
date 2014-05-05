@@ -95,11 +95,16 @@ class StateGameServer(State, NetworkListener):
             player.render(self.screen)
         self.invader_manager.render(self.screen)
         
-    '''
+    
     def player_joined(self, player_id, topleft):
         NetworkListener.player_joined(self, player_id, topleft)
         
-        self.players_list.append(Player())
+        print "player_joined: "+str(player_id)+" - "+str(topleft)
+        
+        player = Player()
+        self.players_list.append(player)
         if player_id == -1:
-            self.networkHandler.do_send()
-    '''
+            player.player_id = self.players_list.__len__()
+            print str(player.player_id)
+            #self.networkHandler.do_send()
+

@@ -12,7 +12,7 @@ class Client(Handler, NetworkConnector):
         self.connected = False
         print "****** Disconnected from server ******"
     
-    def on_msg(self, msg): pass
+    def on_msg(self, msg, handler=None): pass
     
     def send_msg(self, msg):
         self.do_send(msg)

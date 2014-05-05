@@ -4,22 +4,30 @@ from threading import Thread
 '''Used to attach the network listeners to the handler,
 so that it can notify them when something happens'''
 class NetworkConnector(object):
-    _observers = []
+    _networkListeners = []
     
     'Used to add one object to the list of observers'
-    def attach(self, observer):
-        if not observer in self._observers:
-            self._observers.append(observer)
+    def attach(self, networkListeners):
+        if not networkListeners in self._networkListeners:
+            self._networkListeners.append(networkListeners)
 
     'Used to take one object off the list of observers'
-    def detach(self, observer):
+    def detach(self, networkListener):
         try:
-            self._observers.remove(observer)
+            self._networkListeners.remove(networkListener)
         except ValueError:
             pass
         
+        
+    'Notifies the observers that the following event happened'
+    def notify(self, method_name, *args):
+        for networkListener in self._networkListeners:
+            method = getattr(networkListener, method_name)
+            method(*args)    
+    
+    
     'Must be defined by the subclass. Used to send a message to someone'
-    def send_msg(self, msg): pass
+    def send_msg(self, msg, handler=None): pass
         
         
 '''NetworkListener abstract class, must be extended to receive a message at the network'''

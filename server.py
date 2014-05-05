@@ -26,10 +26,13 @@ class Server(NetworkConnector):
     global handlers
     
     def on_msg(self, msg, handler):
+        if 'join' in msg:
+            self.notify('player_joined', msg['join'], msg['topleft'])
         print msg
     
-    def send_msg(self, msg):
-        self._send_to_all_users(msg)
+    def send_msg(self, msg, handler=None):
+        if handler==None:
+            self._send_to_all_users(msg)
 
     def _send_to_all_users(self, msg):
         for h in handlers:
