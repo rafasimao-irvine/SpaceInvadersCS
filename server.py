@@ -22,7 +22,7 @@ class ServerHandler(NetworkHandler):
         for h in handlers:
             h.do_send(msg)
 
-
+'''Starts the server connection'''
 def start_server():
     port = 8888
     server = Listener(port, ServerHandler)

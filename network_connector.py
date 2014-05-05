@@ -1,6 +1,8 @@
 from network import Handler, poll
 from threading import Thread
 
+'''Used to attach the network listeners to the handler,
+so that it can notify them when something happens'''
 class NetworkHandler(Handler):
     _observers = []
     
@@ -16,7 +18,7 @@ class NetworkHandler(Handler):
         except ValueError:
             pass
         
-
+'''NetworkListener abstract class, must be extended to receive a message at the network'''
 class NetworkListener(object):
     
     def player_joined(self, player): pass
@@ -29,11 +31,12 @@ class NetworkListener(object):
     def invaders_shoot(self, new_projectile): pass
 
         
+'''Keep polling'''
 def periodic_poll():
     while 1:
         poll(timeout=0.05)  # seconds
-
         
+'''Starts a new thread that will be continually polling to receive messages'''
 def start_thread():
     thread = Thread(target=periodic_poll)
     thread.daemon = True  # die when the main thread dies 

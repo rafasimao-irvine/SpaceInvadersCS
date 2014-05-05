@@ -7,7 +7,8 @@ class Client(NetworkHandler):
     
     def on_msg(self, msg): pass
     
-                            
+
+'''Starts the client connection'''                            
 def start_client():
     host, port = 'localhost', 8888
     client = Client(host, port)
