@@ -23,15 +23,29 @@ class ServerHandler(Handler):
             h.do_send(msg)
 
 
+class ServerListener(object):
+    
+    def player_joined(self, player): pass
+    def player_left(self, player): pass
+    def player_performed_action(self, player, action): pass
+    
+    def player_new_score(self, score): pass
+
+    def invaders_changed_driection(self, new_direction): pass
+    def invaders_shoot(self, new_projectile): pass
+
+
+
 def periodic_poll():
     while 1:
         poll(timeout=0.05)  # seconds
 
 def start_server():
     port = 8888
-    Listener(port, ServerHandler)
-    #server = Listener(port, MyHandler)
+    server = Listener(port, ServerHandler)
     
     thread = Thread(target=periodic_poll)
     thread.daemon = True  # die when the main thread dies 
     thread.start()
+
+    return server

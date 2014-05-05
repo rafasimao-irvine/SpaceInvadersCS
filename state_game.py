@@ -13,8 +13,8 @@ class StateGame(State):
     #invader = Invaders(0)
     invader_manager = InvadersManager()
 
-    def __init__(self, screen, inputManager):
-        State.__init__(self, screen, inputManager)
+    def __init__(self, screen, inputManager, networkHandler):
+        State.__init__(self, screen, inputManager, networkHandler)
         inputManager.attach(self.player)
         
         self.board_bounds = pygame.Rect(0,0,screen.get_width(),screen.get_height())

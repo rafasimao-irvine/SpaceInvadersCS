@@ -19,11 +19,14 @@ class Manager:
 
     pygame.display.set_caption("SpaceInvaders")        
     
+    #NetworkHandler
+    networkHandler = start_server()
+    
     #InputManager
     inputManager = InputManager()
 
     #Introduction state
-    state = StateGameServer(screen, inputManager)
+    state = StateGameServer(screen, inputManager, networkHandler)
      
     #Game started check
     game_started = True
@@ -70,5 +73,4 @@ class Manager:
 if "__main__" == __name__:
                 
     manager = Manager()
-    start_server()
     manager._run()

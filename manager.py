@@ -3,7 +3,7 @@ from input_manager import InputManager
 from state_game_intro import StateGameIntro
 from state_game import StateGame
 
-from client import *
+from client import start_client
 
 #initiate the pygame
 pygame.init()
@@ -21,14 +21,17 @@ class Manager:
 
     pygame.display.set_caption("SpaceInvaders")        
     
+    #NetworkHandler
+    networkHandler = start_client()
+    
     #InputManager
     inputManager = InputManager()
 
     #Introduction state
-    state = StateGameIntro(0, screen, inputManager)
+    state = StateGameIntro(0, screen, inputManager, networkHandler)
     
     #Game state
-    game_state = StateGame(screen, inputManager)
+    game_state = StateGame(screen, inputManager, networkHandler)
      
     #Game started check
     game_started = False
@@ -79,7 +82,6 @@ class Manager:
 if "__main__" == __name__:
                 
     manager = Manager()
-    start_client()
     manager._run()
 
     
