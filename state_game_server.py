@@ -2,41 +2,45 @@ import pygame
 from state import State
 from player import Player
 from invaders_manager import InvadersManager
+from network_connector import NetworkListener
 #from Invaders import Invaders
 
 '''
 Main game state. Might be the class where the whole game will run at.
 '''
-class StateGameServer(State):
+class StateGameServer(State, NetworkListener):
 
     players_list = list()
     #invader = Invaders(0)
     invader_manager = InvadersManager()
 
-    def __init__(self, screen, inputManager, networkHandler):
-        State.__init__(self, screen, inputManager, networkHandler)
+    def __init__(self, screen, inputManager, networkConnector):
+        State.__init__(self, screen, inputManager, networkConnector)
+        self.networkConnector.attach(self) #attach to the network handler
         
         self.board_bounds = pygame.Rect(0,0,screen.get_width(),screen.get_height())
         
         self.fontObj = pygame.font.Font('freesansbold.ttf', 22)
         
         
-    def destroy(self): pass
+    def destroy(self):
+        self.networkConnector.detach(self)
     
     
     '''Update'''
     def update(self, dt):
-        State.update(self, dt) 
+        if self.players_list.__len__() > 0:
+            State.update(self, dt) 
 
-        #Updates the game objects
-        for player in self.players_list:
-            player.update(dt)
-        #self.invader.update(dt)
-        self.invader_manager.update(dt)
+            #Updates the game objects
+            for player in self.players_list:
+                player.update(dt)
+            #self.invader.update(dt)
+            self.invader_manager.update(dt)
 
-        #treats projectiles hits        
-        self._treat_invader_projectiles()
-        self._treat_player_projectiles()
+            #treats projectiles hits        
+            self._treat_invader_projectiles()
+            self._treat_player_projectiles()
         
     'Make invaders projectiles collisions and perform the consequences'
     def _treat_invader_projectiles(self):
@@ -91,5 +95,11 @@ class StateGameServer(State):
             player.render(self.screen)
         self.invader_manager.render(self.screen)
         
+    '''
+    def player_joined(self, player_id, topleft):
+        NetworkListener.player_joined(self, player_id, topleft)
         
-        
+        self.players_list.append(Player())
+        if player_id == -1:
+            self.networkHandler.do_send()
+    '''

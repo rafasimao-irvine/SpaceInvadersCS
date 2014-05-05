@@ -1,9 +1,9 @@
-from network import Handler, poll
+from network import poll
 from threading import Thread
 
 '''Used to attach the network listeners to the handler,
 so that it can notify them when something happens'''
-class NetworkHandler(Handler):
+class NetworkConnector(object):
     _observers = []
     
     'Used to add one object to the list of observers'
@@ -18,12 +18,16 @@ class NetworkHandler(Handler):
         except ValueError:
             pass
         
+    'Must be defined by the subclass. Used to send a message to someone'
+    def send_msg(self, msg): pass
+        
+        
 '''NetworkListener abstract class, must be extended to receive a message at the network'''
 class NetworkListener(object):
     
-    def player_joined(self, player): pass
-    def player_left(self, player): pass
-    def player_performed_action(self, player, action): pass
+    def player_joined(self, player_id, topleft): pass
+    def player_left(self, player_id): pass
+    def player_performed_action(self, player_id, action): pass
     
     def player_new_score(self, score): pass
 

@@ -1,12 +1,13 @@
-from network import Listener
+from network import Handler, Listener
 
-from network_connector import NetworkHandler, NetworkListener, start_thread
+from network_connector import NetworkConnector, NetworkListener, start_thread
  
 handlers = {}  # map client handler to user name
+server = None
 
-class ServerHandler(NetworkHandler):
+class ServerHandler(Handler):
     
-    global handlers
+    global handlers, server
     
     def on_open(self):
         handlers[self] = None
@@ -15,18 +16,34 @@ class ServerHandler(NetworkHandler):
         del handlers[self] #remove from the dictionary
      
     def on_msg(self, msg):
+        if server != None:
+            server.on_msg(msg, self)
+
+    
+
+class Server(NetworkConnector):
+    
+    global handlers
+    
+    def on_msg(self, msg, handler):
         print msg
+    
+    def send_msg(self, msg):
+        self._send_to_all_users(msg)
 
-
-    def _send_to_all_users(self,msg):
+    def _send_to_all_users(self, msg):
         for h in handlers:
             h.do_send(msg)
 
+
 '''Starts the server connection'''
 def start_server():
+    global server
+    
     port = 8888
-    server = Listener(port, ServerHandler)
+    Listener(port, ServerHandler)
+    server = Server()
     
     start_thread()
-
+    
     return server

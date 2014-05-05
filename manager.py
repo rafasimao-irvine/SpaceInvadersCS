@@ -22,17 +22,14 @@ class Manager:
     pygame.display.set_caption("SpaceInvaders")        
     
     #NetworkHandler
-    networkHandler = start_client()
+    networkConnector = start_client()
     
     #InputManager
     inputManager = InputManager()
 
     #Introduction state
-    state = StateGameIntro(0, screen, inputManager, networkHandler)
+    state = StateGameIntro(0, screen, inputManager, networkConnector)
     
-    #Game state
-    game_state = StateGame(screen, inputManager, networkHandler)
-     
     #Game started check
     game_started = False
     #Main Loop
@@ -47,7 +44,7 @@ class Manager:
             
             if self.game_started == False:
                 if self.state.start == 100:
-                    self.set_state(self.game_state)
+                    self.set_state(StateGame(self.screen, self.inputManager, self.networkConnector))
                     self.game_started = True
             
             #Updates

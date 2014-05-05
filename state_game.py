@@ -4,25 +4,34 @@ from player import Player
 from invaders_manager import InvadersManager
 #from Invaders import Invaders
 
+from client import Client
+from network_connector import NetworkListener
+
 '''
 Main game state. Might be the class where the whole game will run at.
 '''
-class StateGame(State):
+class StateGame(State, NetworkListener):
 
     player = Player() 
     #invader = Invaders(0)
     invader_manager = InvadersManager()
 
-    def __init__(self, screen, inputManager, networkHandler):
-        State.__init__(self, screen, inputManager, networkHandler)
+    def __init__(self, screen, inputManager, networkConnector):
+        State.__init__(self, screen, inputManager, networkConnector)
         inputManager.attach(self.player)
+        
+        if isinstance(networkConnector, Client) and networkConnector.connected:
+            self.networkConnector.attach(self)
+            self.networkConnector.send_msg({'join':self.player.player_id,'topleft':self.player.box.topleft})
         
         self.board_bounds = pygame.Rect(0,0,screen.get_width(),screen.get_height())
         
         self.fontObj = pygame.font.Font('freesansbold.ttf', 22)
         
-    def destroy(self): pass
-    
+        
+    def destroy(self):
+        self.networkConnector.detach(self)
+        self.networkConnector.do_send({'left':self.player.player_id})
     
     
     '''Update'''
