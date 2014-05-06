@@ -28,9 +28,6 @@ class Manager:
     #Introduction state
     state = StateGameServer(screen, inputManager, networkConnector)
      
-    #Game started check
-    game_started = False
-    
     #Main Loop
     def _run(self):
         self.gameOn = True
@@ -41,9 +38,8 @@ class Manager:
             #Inputs
             self.inputManager.update()
             
-            if self.game_started == True:
-                #Updates
-                self.update(dt)
+            #Updates
+            self.update(dt)
                 
             #Renders, put in the screen
             self.render()

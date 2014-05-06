@@ -10,7 +10,10 @@ Main game state. Might be the class where the whole game will run at.
 '''
 class StateGameServer(State, NetworkListener):
 
+    #Game started check
+    game_started = False
     
+    #List of players
     players_list = list()
     #invader = Invaders(0)
     invader_manager = InvadersManager()
@@ -30,18 +33,19 @@ class StateGameServer(State, NetworkListener):
     
     '''Update'''
     def update(self, dt):
-        if self.players_list.__len__() > 0:
-            State.update(self, dt) 
+        if self.game_started == True:
+            if self.players_list.__len__() > 0:
+                State.update(self, dt) 
 
-            #Updates the game objects
-            for player in self.players_list:
-                player.update(dt)
-            #self.invader.update(dt)
-            self.invader_manager.update(dt)
+                #Updates the game objects
+                for player in self.players_list:
+                    player.update(dt)
+                #self.invader.update(dt)
+                self.invader_manager.update(dt)
 
-            #treats projectiles hits        
-            self._treat_invader_projectiles()
-            self._treat_player_projectiles()
+                #treats projectiles hits        
+                self._treat_invader_projectiles()
+                self._treat_players_projectiles()
         
     'Make invaders projectiles collisions and perform the consequences'
     def _treat_invader_projectiles(self):
@@ -57,7 +61,7 @@ class StateGameServer(State, NetworkListener):
                             self.invader_manager.projectile_list.remove(shot)
 
     'Make players projectiles collisions and perform the consequences'
-    def _treat_player_projectiles(self):
+    def _treat_players_projectiles(self):
         for player in self.players_list:
             if player.projectile_list.__len__() > 0: 
                 #Goes through all the invaders projectiles
@@ -105,6 +109,7 @@ class StateGameServer(State, NetworkListener):
         player = Player()
         player.box.topleft = topleft
         self.players_list.append(player)
-
+        
+        self.game_started = True
         print "player_joined: "+str(player_ip)+" - "+str(topleft)
 
