@@ -1,9 +1,8 @@
 import pygame
-from input_listener import InputListener
 from projectile import Projectile
 from game_object import GameObject
 
-class Player(GameObject, InputListener):
+class Player(GameObject):
     
     'Inits the player attributes'
     def __init__(self):
@@ -65,6 +64,7 @@ class Player(GameObject, InputListener):
     def increase_score(self, points):
         self.score += points
 
+    '''
     'Receives inputs and treats them if they corresponds to moving or firing'
     def receive_input(self, event):
         #Starts moving
@@ -87,6 +87,8 @@ class Player(GameObject, InputListener):
         elif event.type == pygame.KEYUP:
             if event.key == pygame.K_SPACE:
                 self.fire_shot(False)
+    '''
+    
     
     'Move Actions'            
     def move_left(self, is_moving):

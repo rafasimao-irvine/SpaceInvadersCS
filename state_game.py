@@ -1,6 +1,7 @@
 import pygame
 from state import State
 from random import randint
+from input_listener import InputListener
 from player import Player
 from invaders_manager import InvadersManager
 #from Invaders import Invaders
@@ -11,7 +12,7 @@ from network_connector import NetworkListener
 '''
 Main game state. Might be the class where the whole game will run at.
 '''
-class StateGame(State, NetworkListener):
+class StateGame(State, InputListener, NetworkListener):
 
     player = Player()
     players_list = {}
@@ -20,7 +21,7 @@ class StateGame(State, NetworkListener):
 
     def __init__(self, screen, inputManager, networkConnector):
         State.__init__(self, screen, inputManager, networkConnector)
-        inputManager.attach(self.player)
+        inputManager.attach(self)
         
         self.players_list[self.player] = networkConnector.my_ip
         
@@ -34,7 +35,7 @@ class StateGame(State, NetworkListener):
         
         
     def destroy(self):
-        self.inputManager.detach(self.player)
+        self.inputManager.detach(self)
         self.networkConnector.detach(self)
         self.networkConnector.send_msg({'left':self.networkConnector.my_ip})
     
@@ -166,6 +167,33 @@ class StateGame(State, NetworkListener):
         self.screen.blit(msgSurfaceObject, msgRectObject)
         
         
+      
+    '''***** Input receiver: *****'''
+      
+    'Receives inputs and treats them if they corresponds to moving or firing'
+    def receive_input(self, event):
+        #Starts moving
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_a:
+                self.player.move_left(True)
+            elif event.key == pygame.K_d:
+                self.player.move_right(True)
+        #Finishes moving
+        elif event.type == pygame.KEYUP:
+            if event.key == pygame.K_a:
+                self.player.move_left(False)
+            elif event.key == pygame.K_d:
+                self.player.move_right(False)
+        #Starts firing projectile
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_SPACE:
+                self.player.fire_shot(True)
+        #Finishes firing projectile
+        elif event.type == pygame.KEYUP:
+            if event.key == pygame.K_SPACE:
+                self.player.fire_shot(False)    
+    
+    
         
     '''***** Network receivers: *****'''
     
