@@ -21,8 +21,8 @@ class StateGame(State, NetworkListener):
         inputManager.attach(self.player)
         
         if isinstance(networkConnector, Client) and networkConnector.connected:
-            self.networkConnector.attach(self)
-            self.networkConnector.send_msg({'join':self.player.player_id,'topleft':self.player.box.topleft})
+            networkConnector.attach(self)
+            networkConnector.send_msg({'join':networkConnector.my_ip,'topleft':self.player.box.topleft})
         
         self.board_bounds = pygame.Rect(0,0,screen.get_width(),screen.get_height())
         
@@ -31,7 +31,7 @@ class StateGame(State, NetworkListener):
         
     def destroy(self):
         self.networkConnector.detach(self)
-        self.networkConnector.send_msg({'left':self.player.player_id})
+        self.networkConnector.send_msg({'left':self.networkConnector.my_ip})
     
     
     '''Update'''

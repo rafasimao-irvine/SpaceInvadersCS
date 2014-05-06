@@ -1,6 +1,6 @@
 from network import Handler, Listener
 
-from network_connector import NetworkConnector, NetworkListener, start_thread
+from network_connector import NetworkConnector, start_thread
  
 handlers = {}  # map client handler to user name
 server = None
@@ -30,9 +30,8 @@ class Server(NetworkConnector):
             self.notify('player_joined', msg['join'], msg['topleft'])
         print msg
     
-    def send_msg(self, msg, handler=None):
-        if handler==None:
-            self._send_to_all_users(msg)
+    def send_msg(self, msg):
+        self._send_to_all_users(msg)
 
     def _send_to_all_users(self, msg):
         for h in handlers:

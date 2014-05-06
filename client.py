@@ -1,5 +1,5 @@
 from network import Handler
-from network_connector import NetworkConnector, NetworkListener, start_thread
+from network_connector import NetworkConnector, start_thread
 
 class Client(Handler, NetworkConnector):
     
@@ -12,7 +12,7 @@ class Client(Handler, NetworkConnector):
         self.connected = False
         print "****** Disconnected from server ******"
     
-    def on_msg(self, msg, handler=None): pass
+    def on_msg(self, msg, ip=None): pass
     
     def send_msg(self, msg):
         self.do_send(msg)

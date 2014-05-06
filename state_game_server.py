@@ -10,6 +10,7 @@ Main game state. Might be the class where the whole game will run at.
 '''
 class StateGameServer(State, NetworkListener):
 
+    
     players_list = list()
     #invader = Invaders(0)
     invader_manager = InvadersManager()
@@ -96,15 +97,14 @@ class StateGameServer(State, NetworkListener):
         self.invader_manager.render(self.screen)
         
     
-    def player_joined(self, player_id, topleft):
-        NetworkListener.player_joined(self, player_id, topleft)
-        
-        print "player_joined: "+str(player_id)+" - "+str(topleft)
+    '''***** Network receivers: *****'''
+    
+    def player_joined(self, player_ip, topleft):
+        NetworkListener.player_joined(self, player_ip, topleft)
         
         player = Player()
+        player.box.topleft = topleft
         self.players_list.append(player)
-        if player_id == -1:
-            player.player_id = self.players_list.__len__()
-            print str(player.player_id)
-            #self.networkHandler.do_send()
+
+        print "player_joined: "+str(player_ip)+" - "+str(topleft)
 

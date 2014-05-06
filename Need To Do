@@ -9,7 +9,7 @@ if it still is the list of invaders (if the projectile actually hit)
 
 Tasks:
 Client
-- Create a connection between the client and the server; Clients join right away;
+- Create a connection between the client and the server; Clients join right away; Done
 - Send input messages to the server; 
 - Receive other players inputs;
 - Display the other players;
