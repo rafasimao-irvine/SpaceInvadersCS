@@ -12,8 +12,8 @@ Client
 - Create a connection between the client and the server; Clients join right away; Done
 - Send input messages to the server; 
 - Receive other players inputs;
-- Display the other players;
- - Change players colors;
+- Display the other players; Done
+ - Change players colors; Other players collors changed Done
 - Create the 5 secs immunity;
 
 Server
