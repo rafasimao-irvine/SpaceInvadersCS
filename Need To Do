@@ -17,8 +17,8 @@ Client
 - Create the 5 secs immunity;
 
 Server
-- Broadcast the players inputs;
+- Broadcast the players inputs; Brian
 - Authenticate the projectile collisions;
-- Send the invaders changing directions messages;
+- Send the invaders changing directions messages;Brian
 - Send the shoots from the invaders;
 - Keep the scores and send them to the players when it changes;

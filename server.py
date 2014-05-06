@@ -1,6 +1,7 @@
 from network import Handler, Listener
 
 from network_connector import NetworkConnector, start_thread
+from Model import Model
  
 handlers = {}  # map client handler to user name
 server = None
@@ -42,10 +43,14 @@ class Server(NetworkConnector):
         for h in handlers:
             h.do_send(msg)
 
+    def updateModel(self, model):
+        #run
 
 '''Starts the server connection'''
 def start_server():
     global server
+    
+    model = Model()
     
     port = 8888
     Listener(port, ServerHandler)
