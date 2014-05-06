@@ -9,6 +9,8 @@ class Player(GameObject, InputListener):
     def __init__(self):
         GameObject.__init__(self, 425.0, 500.0, 60, 60)
         
+        self.color = pygame.Color(255,255,255)
+        
         self.life = 5
         self.score = 0
         
@@ -49,7 +51,7 @@ class Player(GameObject, InputListener):
         if self.projectile_list.__len__() > 0: 
             for shot in self.projectile_list:
                 shot.render(pygame.Color(0, 191, 255), screen)
-        pygame.draw.rect(screen, pygame.Color(255,255,255), 
+        pygame.draw.rect(screen, self.color, 
                          (self.box.left,self.box.top,self.box.width,self.box.height))
         
         #Draws the player life

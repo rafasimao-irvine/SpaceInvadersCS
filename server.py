@@ -32,6 +32,7 @@ class Server(NetworkConnector):
     def on_msg(self, msg, handler):
         if 'join' in msg:
             self.notify('player_joined', msg['join'], msg['topleft'])
+            self.send_msg(msg)
         print msg
     
     def send_msg(self, msg):

@@ -12,7 +12,10 @@ class Client(Handler, NetworkConnector):
         self.connected = False
         print "****** Disconnected from server ******"
     
-    def on_msg(self, msg, ip=None): pass
+    def on_msg(self, msg):
+        if 'join' in msg:
+            self.notify('player_joined', msg['join'], msg['topleft'])
+        print msg
     
     def send_msg(self, msg):
         self.do_send(msg)

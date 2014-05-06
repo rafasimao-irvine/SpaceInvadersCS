@@ -5,6 +5,8 @@ from invaders_manager import InvadersManager
 from network_connector import NetworkListener
 #from Invaders import Invaders
 
+import hashlib
+
 '''
 Main game state. Might be the class where the whole game will run at.
 '''
@@ -115,5 +117,5 @@ class StateGameServer(State, NetworkListener):
         self.players_list[player] = player_ip
         
         self.game_started = True
-        print "player_joined: "+str(player_ip)+" - "+str(topleft)
-
+        #print "player_joined: "+str(player_ip)+" - "+str(topleft)
+        
