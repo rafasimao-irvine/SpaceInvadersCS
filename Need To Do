@@ -11,14 +11,14 @@ Tasks:
 Client
 - Create a connection between the client and the server; Clients join right away; Done
 - Send input messages to the server;  Rafael
-- Receive other players inputs;
+- Receive other players inputs; Brian maybe done? (not tested)
 - Display the other players; Done
  - Change players colors; Other players collors changed Done
 - Create the 5 secs immunity;
 
 Server
-- Broadcast the players inputs; Brian
+- Broadcast the players inputs; Brian maybe done? (not tested)
 - Authenticate the projectile collisions;
-- Send the invaders changing directions messages;Brian
-- Send the shoots from the invaders;
+- Send the invaders changing directions messages;Brian maybe done? (not tested)
+- Send the shoots from the invaders; Brian; maybe done? (not tested)
 - Keep the scores and send them to the players when it changes;

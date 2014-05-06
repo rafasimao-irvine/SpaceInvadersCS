@@ -15,6 +15,14 @@ class Client(Handler, NetworkConnector):
     def on_msg(self, msg):
         if 'join' in msg:
             self.notify('player_joined', msg['join'], msg['topleft'])
+        elif 'direction' in msg:
+            self.notify('invaders_changed_direction', msg['invaders_changed_direction'], msg['new_direction'])
+        elif 'left' in msg:
+            self.notify('player_hit_left', msg['left'], msg['new_direction'])
+        elif 'right' in msg:
+            self.notify('player_hit_right', msg['right'], msg['new_direction'])
+        elif 'shot' in msg:
+            self.notify('invader took a shot', msg['invaders_shoot'])
         print msg
     
     def send_msg(self, msg):

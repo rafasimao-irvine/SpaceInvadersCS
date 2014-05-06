@@ -1,4 +1,5 @@
 import pygame
+import server
 from state import State
 from player import Player
 from invaders_manager import InvadersManager
@@ -7,6 +8,9 @@ from network_connector import NetworkListener
 
 import hashlib
 
+flag = 0
+def raise_Flag_of_Invader_Direction():
+    flag = 1
 '''
 Main game state. Might be the class where the whole game will run at.
 '''
@@ -45,6 +49,7 @@ class StateGameServer(State, NetworkListener):
                     player.update(dt)
                 #self.invader.update(dt)
                 self.invader_manager.update(dt)
+                self.check_if_Invaders_Changed_Direction()
 
                 #treats projectiles hits        
                 self._treat_invader_projectiles()
@@ -105,6 +110,14 @@ class StateGameServer(State, NetworkListener):
         for player in self.players_list:
             player.render(self.screen)
         self.invader_manager.render(self.screen)
+        
+    def check_if_Invaders_Changed_Direction(self):
+        if flag == 1:
+            s = server.server
+            s.send_msg('direction')
+            flag = 0
+        elif flag == 0:
+            pass
         
     
     '''***** Network receivers: *****'''

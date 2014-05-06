@@ -9,6 +9,7 @@ from client import start_client
 pygame.init()
 fpsClock = pygame.time.Clock()
 #print("initializing clock: ", fpsClock)
+clients = list()
 
 #Manager class
 class Manager:

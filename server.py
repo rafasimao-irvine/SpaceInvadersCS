@@ -5,7 +5,11 @@ from Model import Model
  
 handlers = {}  # map client handler to user name
 server = None
+flag = 0
 
+def raiseFlag():
+    flag = 1
+    
 class ServerHandler(Handler):
     
     global handlers, server
@@ -29,10 +33,15 @@ class ServerHandler(Handler):
 class Server(NetworkConnector):
     
     global handlers
+    model = Model()
     
     def on_msg(self, msg, handler):
         if 'join' in msg:
             self.notify('player_joined', msg['join'], msg['topleft'])
+            self.send_msg(msg)
+        elif 'left' in msg:
+            self.send_msg(msg)
+        elif 'right' in msg:
             self.send_msg(msg)
         print msg
     
@@ -43,14 +52,12 @@ class Server(NetworkConnector):
         for h in handlers:
             h.do_send(msg)
 
-    def updateModel(self, model):
-        #run
+    def updateModel(self):
+        pass
 
 '''Starts the server connection'''
 def start_server():
     global server
-    
-    model = Model()
     
     port = 8888
     Listener(port, ServerHandler)
