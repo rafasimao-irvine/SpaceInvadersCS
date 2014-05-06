@@ -14,7 +14,8 @@ class StateGameServer(State, NetworkListener):
     game_started = False
     
     #List of players
-    players_list = list()
+    #players_list = list()
+    players_list = {}
     #invader = Invaders(0)
     invader_manager = InvadersManager()
 
@@ -55,10 +56,13 @@ class StateGameServer(State, NetworkListener):
                 #If it is out of the board game box, it is removed
                 if not self._remove_if_out_of_board(self.invader_manager.projectile_list, shot):
                     #If it collides with the player, the player receives the damage and the projectile is removed
+                    collided = False
                     for player in self.players_list:
                         if shot.is_colliding_with(player):
-                            #self.player.receive_hit()
-                            self.invader_manager.projectile_list.remove(shot)
+                            player.receive_hit()
+                            collided = True
+                    if collided:
+                        self.invader_manager.projectile_list.remove(shot)
 
     'Make players projectiles collisions and perform the consequences'
     def _treat_players_projectiles(self):
@@ -108,7 +112,7 @@ class StateGameServer(State, NetworkListener):
         
         player = Player()
         player.box.topleft = topleft
-        self.players_list.append(player)
+        self.players_list[player] = player_ip
         
         self.game_started = True
         print "player_joined: "+str(player_ip)+" - "+str(topleft)

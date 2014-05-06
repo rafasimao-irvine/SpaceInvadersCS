@@ -7,8 +7,8 @@ class Player(GameObject, InputListener):
     
     'Inits the player attributes'
     def __init__(self):
-        GameObject.__init__(self, 425.0, 500.0, 60, 60)    
-
+        GameObject.__init__(self, 425.0, 500.0, 60, 60)
+        
         self.life = 5
         self.score = 0
         

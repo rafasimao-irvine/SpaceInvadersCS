@@ -16,6 +16,10 @@ class ServerHandler(Handler):
         del handlers[self] #remove from the dictionary
      
     def on_msg(self, msg):
+        #Keeps the handler ip
+        if 'join' in msg:
+            handlers[self] = msg['join']
+            
         if server != None:
             server.on_msg(msg, self)
 
