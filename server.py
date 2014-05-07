@@ -1,6 +1,6 @@
 from network import Handler, Listener
 
-from network_connector import NetworkConnector, start_thread
+#from network_connector import NetworkConnector, start_thread
  
 handlers = {}  # map client handler to user name
 server = None
@@ -29,13 +29,13 @@ class ServerHandler(Handler):
 
     
 
-class Server(NetworkConnector):
+class Server():
     
     global handlers
     
     def on_msg(self, msg, handler):
         if 'join' in msg:
-            self.notify('player_joined', msg['join'], msg['topleft'])
+            #self.notify('player_joined', msg['join'], msg['topleft'])
             self.send_msg(msg)
         elif 'left' in msg:
             self.send_msg(msg)
@@ -61,6 +61,6 @@ def start_server():
     Listener(port, ServerHandler)
     server = Server()
     
-    start_thread()
+    #start_thread()
     
     return server
