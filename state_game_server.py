@@ -119,3 +119,25 @@ class StateGameServer(State, NetworkListener):
         self.game_started = True
         #print "player_joined: "+str(player_ip)+" - "+str(topleft)
         
+        
+    def player_performed_action(self, player_ip, action):
+        NetworkListener.player_performed_action(self, player_ip, action)
+        
+        player = None
+        for p in self.players_list:
+            if self.players_list[p] == player_ip:
+                player = p
+                
+        if player != None:
+            if action == 'keydown_left':
+                player.move_left(True)
+            elif action == 'keydown_right':
+                player.move_right(True)
+            elif action == 'keydown_fire':
+                player.fire_shot(True)
+            elif action == 'keyup_left':
+                player.move_left(False)
+            elif action == 'keyup_right':
+                player.move_right(False)
+            elif action == 'keyup_fire':
+                player.fire_shot(False)

@@ -172,26 +172,40 @@ class StateGame(State, InputListener, NetworkListener):
       
     'Receives inputs and treats them if they corresponds to moving or firing'
     def receive_input(self, event):
+        
+        my_ip = self.networkConnector.my_ip
         #Starts moving
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_a:
                 self.player.move_left(True)
+                self.networkConnector.send_msg(
+                    {'performed_action':my_ip, 'action':'keydown_left'})
             elif event.key == pygame.K_d:
                 self.player.move_right(True)
+                self.networkConnector.send_msg(
+                    {'performed_action':my_ip, 'action':'keydown_right'})
         #Finishes moving
         elif event.type == pygame.KEYUP:
             if event.key == pygame.K_a:
                 self.player.move_left(False)
+                self.networkConnector.send_msg(
+                    {'performed_action':my_ip, 'action':'keyup_left'})
             elif event.key == pygame.K_d:
                 self.player.move_right(False)
+                self.networkConnector.send_msg(
+                    {'performed_action':my_ip, 'action':'keyup_right'})
         #Starts firing projectile
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE:
                 self.player.fire_shot(True)
+                self.networkConnector.send_msg(
+                    {'performed_action':my_ip, 'action':'keydown_fire'})
         #Finishes firing projectile
         elif event.type == pygame.KEYUP:
             if event.key == pygame.K_SPACE:
-                self.player.fire_shot(False)    
+                self.player.fire_shot(False)
+                self.networkConnector.send_msg(
+                    {'performed_action':my_ip, 'action':'keyup_fire'})    
     
     
         

@@ -1,4 +1,5 @@
 from network import Handler, Listener
+#from threading import Thread, Lock
 
 from network_connector import NetworkConnector, start_thread
  
@@ -33,14 +34,21 @@ class Server(NetworkConnector):
         if 'join' in msg:
             self.notify('player_joined', msg['join'], msg['topleft'])
             self.send_msg(msg)
+        elif 'performed_action' in msg:
+            self.notify('player_performed_action', msg['performed_action'], msg['action'])
+            #self.send_msg(msg)
         print msg
     
     def send_msg(self, msg):
+        #if handlers.__len__()>0:
         self._send_to_all_users(msg)
 
     def _send_to_all_users(self, msg):
+        #lock = Lock()
+        #lock.acquire()
         for h in handlers:
             h.do_send(msg)
+        #lock.release()
 
 
 '''Starts the server connection'''

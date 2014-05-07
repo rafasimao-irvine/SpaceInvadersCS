@@ -14,11 +14,13 @@ class Client(Handler, NetworkConnector):
     
     def on_msg(self, msg):
         if 'join' in msg:
-            self.notify('player_joined', msg['join'], msg['topleft'])
+            if msg['join'] != self.my_ip:
+                self.notify('player_joined', msg['join'], msg['topleft'])
         print msg
     
     def send_msg(self, msg):
         self.do_send(msg)
+        #print str(msg)
     
 
 '''Starts the client connection'''                            
