@@ -31,7 +31,7 @@ class Invaders(GameObject):
     then subtracting that product from the amount of invaders that have been spawned. We then _move
     this invader over the appropriate amount of spaces.
     '''
-    def __init__(self, projectiles, x, amountOfInvadersSpawned, networkConnector):
+    def __init__(self, projectiles, x, amountOfInvadersSpawned):
         maxInvaders = 5
         #check if there are destroyed invaders you can replace
         temp = amountOfInvadersSpawned/maxInvaders
@@ -96,8 +96,6 @@ class Invaders(GameObject):
         else:
             self.timeSinceLastShot = self.timeSinceLastShot + dt
 
-        #send msg out to the clients that an invader has shot
-        server.server.send_msg('shot')
         
     '''
     update() is called by the manager class individually for each invader, and will handle calling 
@@ -122,8 +120,6 @@ class Invaders(GameObject):
             self.howManyMoves = self.max_down_move
         else:
             self.howManyMoves = self.max_side_move
-        pos = [self.x, self.y]
-        server.server.send_msg('direction', self.direction, pos)
         
     def render(self, screen):
         pygame.draw.rect(screen, pygame.Color(230,230,230), 
