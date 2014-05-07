@@ -31,7 +31,7 @@ class Invaders(GameObject):
     then subtracting that product from the amount of invaders that have been spawned. We then _move
     this invader over the appropriate amount of spaces.
     '''
-    def __init__(self, projectiles, x, amountOfInvadersSpawned):
+    def __init__(self, projectiles, x, amountOfInvadersSpawned, networkConnector):
         maxInvaders = 5
         #check if there are destroyed invaders you can replace
         temp = amountOfInvadersSpawned/maxInvaders

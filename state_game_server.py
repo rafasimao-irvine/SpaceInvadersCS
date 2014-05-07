@@ -8,9 +8,6 @@ from network_connector import NetworkListener
 
 import hashlib
 
-flag = 0
-def raise_Flag_of_Invader_Direction():
-    flag = 1
 '''
 Main game state. Might be the class where the whole game will run at.
 '''
@@ -110,14 +107,6 @@ class StateGameServer(State, NetworkListener):
         for player in self.players_list:
             player.render(self.screen)
         self.invader_manager.render(self.screen)
-        
-    def check_if_Invaders_Changed_Direction(self):
-        if flag == 1:
-            s = server.server
-            s.send_msg('direction')
-            flag = 0
-        elif flag == 0:
-            pass
         
     
     '''***** Network receivers: *****'''
