@@ -56,6 +56,7 @@ class NetworkListener(object):
     
     def player_joined(self, player_ip, topleft): pass
     def player_left(self, player_ip): pass
+    #remove player_left, put it in the player_performed_action
     def player_performed_action(self, player_ip, action): pass
     
     def player_new_score(self, score): pass

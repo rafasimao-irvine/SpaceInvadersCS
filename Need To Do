@@ -16,6 +16,10 @@ Client
  - Change players colors; Other players collors changed Done
 - Create the 5 secs immunity;
 
+
+-send out the current position of the invaders when they change direction, and their new direction
+-client side -when it recieves the invaders' new direction and position, update it
+
 Server
 - Broadcast the players inputs; Brian maybe done? (not tested)
 - Authenticate the projectile collisions;

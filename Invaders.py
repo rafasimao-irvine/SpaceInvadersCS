@@ -10,7 +10,6 @@ make collisions happen, add RNG to make the invaders shoot at different times
 '''
 import pygame
 import random
-import state_game_server
 import server
 from projectile import Projectile
 from game_object import GameObject
@@ -123,8 +122,9 @@ class Invaders(GameObject):
             self.howManyMoves = self.max_down_move
         else:
             self.howManyMoves = self.max_side_move
-        state_game_server.raise_Flag_of_Invader_Direction()
-                            
+        pos = [self.x, self.y]
+        server.server.send_msg('direction', self.direction, pos)
+        
     def render(self, screen):
         pygame.draw.rect(screen, pygame.Color(230,230,230), 
                          (self.box.x, self.box.y, self.box.width, self.box.height))

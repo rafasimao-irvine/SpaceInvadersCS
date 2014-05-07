@@ -1,7 +1,6 @@
 from network import Handler, Listener
 
 from network_connector import NetworkConnector, start_thread
-from Model import Model
  
 handlers = {}  # map client handler to user name
 server = None
@@ -33,7 +32,6 @@ class ServerHandler(Handler):
 class Server(NetworkConnector):
     
     global handlers
-    model = Model()
     
     def on_msg(self, msg, handler):
         if 'join' in msg:
