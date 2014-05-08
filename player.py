@@ -5,7 +5,7 @@ from game_object import GameObject
 class Player(GameObject):
     
     'Inits the player attributes'
-    def __init__(self):
+    def __init__(self, name):
         GameObject.__init__(self, 425.0, 500.0, 60, 60)
         
         self.color = pygame.Color(255,255,255)
@@ -19,7 +19,8 @@ class Player(GameObject):
         self.fire_delay = 15
         
         self.is_moving_right = self.is_moving_left = self.is_firing = False
-    
+        self.name = name
+        
     'Makes the player actions _move and fire'
     def update(self, dt):
         self._move(dt) 
@@ -101,3 +102,5 @@ class Player(GameObject):
     def fire_shot(self, is_firing):
         self.is_firing = is_firing
         
+    def name(self):
+        return self.name
