@@ -3,17 +3,15 @@ from input_manager import InputManager
 from state_game_intro import StateGameIntro
 from state_game import StateGame
 
-from client import start_client
+from client import start_client, run
 
 #initiate the pygame
 pygame.init()
 fpsClock = pygame.time.Clock()
 #print("initializing clock: ", fpsClock)
-clients = list()
 
 #Manager class
 class Manager:
-
     ##Screen
     width, height = 950, 600
     size = width, height
@@ -22,14 +20,12 @@ class Manager:
 
     pygame.display.set_caption("SpaceInvaders")        
     
-    #NetworkHandler
-    networkConnector = start_client()
-    
     #InputManager
     inputManager = InputManager()
 
     #Introduction state
-    state = StateGameIntro(0, screen, inputManager, networkConnector)
+    state = StateGameIntro(0, screen, inputManager)
+    client = start_client()
     
     #Game started check
     game_started = False
@@ -39,7 +35,7 @@ class Manager:
         
         while self.gameOn:
             dt = fpsClock.tick(30)
-
+            run()
             #Inputs
             self.inputManager.update()
             

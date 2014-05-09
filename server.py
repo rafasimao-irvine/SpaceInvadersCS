@@ -1,7 +1,6 @@
 from network import Handler, Listener, poll
 from time import sleep
 from player import Player
-#from network_connector import NetworkConnector, start_thread
  
 handlers = {}  # map client handler to user name
 server = None
@@ -10,9 +9,8 @@ player_id = 0
 def broadcast(msg):
     global players
     #[h.do_send(msg) for h in players.keys()]
-    for handler, player in players.items():
-        #myprint("here " + str(player))
-        handler.do_send(msg)
+    for h in handlers.keys():
+        h.do_send(msg)
 
 
 def generate_name():
@@ -24,7 +22,7 @@ def generate_name():
 input_dir = {'left': [-1, 0], 'right': [1, 0]}
 
 event_queue = [] # list of ('event', handler)
-class ServerHandler(Handler):
+class Server(Handler):
     '''on_open() is called whenever a client connects, so a join msg is going to be sent
     on_close() is called whenever a client disconnects, so a quit msg is going to be sent
     on_msg() is called in every other case
@@ -38,43 +36,18 @@ class ServerHandler(Handler):
     def on_msg(self, msg):
         event_queue.append((msg['input'], self))
 
-class Server():
-    
-    global handlers
-    
-    def on_msg(self, msg, handler):
-        pass
-        '''if 'join' in msg:
-            #self.notify('player_joined', msg['join'], msg['topleft'])
-            self.send_msg(msg)
-        elif 'left' in msg:
-            self.send_msg(msg)
-        elif 'right' in msg:
-            self.send_msg(msg)
-        print msg'''
-    
-    def send_msg(self, msg):
-        self._send_to_all_users(msg)
-
-    def _send_to_all_users(self, msg):
-        for h in handlers:
-            h.do_send(msg)
-
-    def updateModel(self):
-        pass
 
 '''Starts the server connection'''
 def start_server():
     global server
     
     port = 8888
-    Listener(port, ServerHandler)
+    Listener(port, Server)
     server = Server()
     
     #start_thread()
     
     return server
-
 '''main loop for server functionality, poll
 1) poll to check for players' actions
 2) send out msgs to clients based on the events that were put into event_queue (
@@ -103,6 +76,7 @@ while 1:
             players[handler] = Player(player_name)
             msg = {'msg_type': 'join',
                    'their_name': players[handler].name(),
+                   'players_list': players
                    }
             broadcast(msg)
             

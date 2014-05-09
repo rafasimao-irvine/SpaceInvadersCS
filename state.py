@@ -5,9 +5,8 @@ Abstract class used as model to the state classes
 '''
 class State(InputListener):
     
-    def __init__(self, screen, inputManager, networkConnector): 
+    def __init__(self, screen, inputManager): 
         self.screen = screen
-        self.networkConnector = networkConnector
         self.inputManager = inputManager
         inputManager.attach(self)
         

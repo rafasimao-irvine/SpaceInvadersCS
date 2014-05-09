@@ -1,33 +1,25 @@
 import pygame
 from state import State
-from random import randint
 from input_listener import InputListener
 from player import Player
 from invaders_manager import InvadersManager
+from client import Client, myname
 #from Invaders import Invaders
 
-from client import Client
-from network_connector import NetworkListener
 
 '''
 Main game state. Might be the class where the whole game will run at.
 '''
-class StateGame(State, InputListener, NetworkListener):
-
-    player = Player()
+class StateGame(State, InputListener):
+    global myname
+    player = Player(myname)
     players_list = {}
     #invader = Invaders(0)
     invader_manager = InvadersManager()
-
-    def __init__(self, screen, inputManager, networkConnector):
-        State.__init__(self, screen, inputManager, networkConnector)
+    def __init__(self, screen, inputManager, client):
+        State.__init__(self, screen, inputManager)
+        self.client = client
         inputManager.attach(self)
-        
-        self.players_list[self.player] = networkConnector.my_ip
-        
-        if isinstance(networkConnector, Client) and networkConnector.connected:
-            networkConnector.attach(self)
-            networkConnector.send_msg({'join':networkConnector.my_ip,'topleft':self.player.box.topleft})
         
         self.board_bounds = pygame.Rect(0,0,screen.get_width(),screen.get_height())
         
@@ -36,8 +28,6 @@ class StateGame(State, InputListener, NetworkListener):
         
     def destroy(self):
         self.inputManager.detach(self)
-        self.networkConnector.detach(self)
-        self.networkConnector.send_msg({'left':self.networkConnector.my_ip})
     
     
     '''Update'''
@@ -176,33 +166,24 @@ class StateGame(State, InputListener, NetworkListener):
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_a:
                 self.player.move_left(True)
+                self.client.player_event("left")
             elif event.key == pygame.K_d:
                 self.player.move_right(True)
+                self.client.player_event("right")
         #Finishes moving
         elif event.type == pygame.KEYUP:
             if event.key == pygame.K_a:
                 self.player.move_left(False)
             elif event.key == pygame.K_d:
                 self.player.move_right(False)
+            self.client.player_event("stop")
         #Starts firing projectile
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE:
                 self.player.fire_shot(True)
+                self.client.player_event("shot")
         #Finishes firing projectile
         elif event.type == pygame.KEYUP:
             if event.key == pygame.K_SPACE:
-                self.player.fire_shot(False)    
-    
-    
-        
-    '''***** Network receivers: *****'''
-    
-    def player_joined(self, player_ip, topleft):
-        NetworkListener.player_joined(self, player_ip, topleft)
-        
-        player = Player()
-        player.box.topleft = topleft
-        player.color = pygame.Color(randint(80,200),randint(80,200),randint(80,200))
-        
-        self.players_list[player] = player_ip
-        
+                self.player.fire_shot(False)
+                self.client.player_event("stop shot")    

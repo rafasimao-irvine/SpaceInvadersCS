@@ -1,15 +1,31 @@
-from network import Handler
-from network_connector import NetworkConnector, start_thread
+from network import Handler, poll
 from player import Player
+from threading import Thread
+from time import sleep
 
+event_queue = []
 players = {} # map player name to rectangle
 myname = None
-class Client(Handler, NetworkConnector):
+keep_going = True
+class Client(Handler):
 
-    
+    def player_event(self, msg):
+        if msg == "left":
+            event_queue.append('left')
+        elif msg == "right":
+            event_queue.append('right')
+        elif msg == "stop":
+            event_queue.append('stop')
+        elif msg == "shot":
+            event_queue.append('shot')
+        elif msg == "stop shot":
+            event_queue.append('stop_shot')
+        
     def on_close(self):
         #send msg to the server 'quit'
         print "****** Disconnected from server ******"
+        
+        
     '''on_msg() receives messages from the server
     for each message (except quit) it checks to see if the message sent from the server was a 
         command that was sent by you
@@ -23,7 +39,8 @@ class Client(Handler, NetworkConnector):
         #sys.stdout.flush()
         if msg['msg_type'] == 'join':
             if myname == msg['their_name']:
-                pass
+                for p in msg['players_list']:
+                    players[p.name] = Player(p.name)
             else:
                 players[msg['their_name']] = Player(msg['their_name'])
                 
@@ -40,33 +57,38 @@ class Client(Handler, NetworkConnector):
             if myname == msg['their_name']:
                 pass
             else:
-                players[msg['their_name']].update(shoot)
-        
-    def send_msg(self, msg):
-        self.do_send(msg)       
-'''
-        if 'join' in msg:
-            self.notify('player_joined', msg['join'], msg['topleft'])
-        elif 'direction' in msg:
-            self.notify('invaders_changed_direction', msg['invaders_changed_direction'], msg['new_direction'])
-        elif 'left' in msg:
-            self.notify('player_hit_left', msg['left'], msg['new_direction'])
-        elif 'right' in msg:
-            self.notify('player_hit_right', msg['right'], msg['new_direction'])
-        elif 'shot' in msg:
-            self.notify('invader took a shot', msg['invaders_shoot'])
-        print msg
-  '''  
+                players[msg['their_name']].fire_shot(True)
+     
     
+def process_input(message):
+        msg = message
+        if msg == 'quit' or msg == 'exit':
+            client.do_close()
+        elif msg: # ignore empty strings
+            client.do_send({'myname': myname, 'input': msg})
+    
+'''Starts the client connection'''
+thread= None
+global client
 
-'''Starts the client connection'''                            
-def start_client():
+def start_client():            
     host, port = 'localhost', 8888
+    global client
     client = Client(host, port)
     #client.do_send({'join':'JOINED!'})
 
-    start_thread()
-    
+    thread = Thread(target=process_input)
+    thread.daemon = True # die when the main thread dies
+    thread.start()
+    client.do_send('join')
     return client
     
+def run():
+    while 1:
     
+        poll() # push and pull network messages
+
+        for m in event_queue:
+            process_input(m) 
+        event_queue = []
+        sleep(1. / 20) # seconds
