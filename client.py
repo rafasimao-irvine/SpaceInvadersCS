@@ -9,6 +9,9 @@ myname = None
 keep_going = True
 class Client(Handler):
 
+    '''player_event() receives a msg from the Player class, and figures out what kind of msg to 
+    send to the server
+    '''
     def player_event(self, msg):
         if msg == "left":
             event_queue.append('left')
@@ -82,7 +85,9 @@ def start_client():
     thread.start()
     client.do_send('join')
     return client
-    
+
+'''run the client
+'''    
 def run():
     while 1:
     
