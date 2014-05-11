@@ -18,6 +18,7 @@ class Player(GameObject):
         self.projectile_list = list()
         self.fire_delay = 15
         
+        self.is_immune = True
         self.is_moving_right = self.is_moving_left = self.is_firing = False
         self.name = name
         

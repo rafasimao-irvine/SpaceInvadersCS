@@ -1,7 +1,7 @@
 import pygame
 from input_manager import InputManager
 from state_game_server import StateGameServer
-from server import start_server
+from server import start_server, run
 
 #initiate the pygame
 pygame.init()
@@ -19,20 +19,22 @@ class Manager:
 
     pygame.display.set_caption("SpaceInvaders")        
     
-    #NetworkHandler
-    networkConnector = start_server()
+    
+    #Server
+    server = start_server()
     
     #InputManager
     inputManager = InputManager()
 
     #Introduction state
-    state = StateGameServer(screen, inputManager, networkConnector)
+    state = StateGameServer(screen, inputManager)
      
     #Main Loop
     def _run(self):
         self.gameOn = True
         
         while self.gameOn:
+            run()
             dt = fpsClock.tick(30)
 
             #Inputs

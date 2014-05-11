@@ -41,7 +41,7 @@ class Manager:
             
             if self.game_started == False:
                 if self.state.start == 100:
-                    self.set_state(StateGame(self.screen, self.inputManager, self.networkConnector))
+                    self.set_state(StateGame(self.screen, self.inputManager, self.client))
                     self.game_started = True
             
             #Updates

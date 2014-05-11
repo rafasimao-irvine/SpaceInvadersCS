@@ -63,12 +63,10 @@ class Client(Handler):
                 players[msg['their_name']].fire_shot(True)
      
     
-def process_input(message):
-        msg = message
-        if msg == 'quit' or msg == 'exit':
-            client.do_close()
-        elif msg: # ignore empty strings
-            client.do_send({'myname': myname, 'input': msg})
+def periodic_poll():
+    while 1:
+        poll()
+        sleep(0.05)  # seconds
     
 '''Starts the client connection'''
 thread= None
@@ -80,7 +78,7 @@ def start_client():
     client = Client(host, port)
     #client.do_send({'join':'JOINED!'})
 
-    thread = Thread(target=process_input)
+    thread = Thread(target=periodic_poll)
     thread.daemon = True # die when the main thread dies
     thread.start()
     client.do_send('join')
@@ -89,11 +87,18 @@ def start_client():
 '''run the client
 '''    
 def run():
-    while 1:
-    
+    #while 1:
+        
+        #msg = "" #message
+        #if msg == 'quit' or msg == 'exit':
+        #    client.do_close()
+        #elif msg: # ignore empty strings
+        #client.do_send({'myname': myname, 'input': msg})
+            
         poll() # push and pull network messages
 
-        for m in event_queue:
-            process_input(m) 
+        #for m in event_queue:
+        #process_input("")#m) 
         event_queue = []
+        
         sleep(1. / 20) # seconds
