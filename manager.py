@@ -50,6 +50,8 @@ class Manager:
                 if self.state.start == 100:
                     self.set_state(self.game_state)
                     self.game_started = True
+                    if self.client != None:
+                        self.client.do_send({'join':self.game_state.player.box.topleft})
             
             #Updates
             self.update(dt)

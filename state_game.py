@@ -24,9 +24,6 @@ class StateGame(State, InputListener, ClientListener):
         
         #self.players_list[self.player] = networkConnector.my_ip
         
-        if client != None:
-            client.do_send({'join':client.my_ip,'topleft':self.player.box.topleft})
-        
         self.board_bounds = pygame.Rect(0,0,screen.get_width(),screen.get_height())
         
         self.fontObj = pygame.font.Font('freesansbold.ttf', 22)

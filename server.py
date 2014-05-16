@@ -8,20 +8,25 @@ server = None
 class ServerHandler(Handler):
     
     global handlers, server
-    
     def on_open(self):
-        handlers[self] = None
+        handlers[self] = generate_id()
          
     def on_close(self):
         del handlers[self] #remove from the dictionary
      
     def on_msg(self, msg):
         #Keeps the handler ip
-        if 'join' in msg:
-            handlers[self] = msg['join']
-            
         if server != None:
             server.on_msg(msg, self)
+            
+
+
+_ids = 0
+def generate_id():
+    global _ids
+    _ids += 1
+    print _ids
+    return _ids
 
     
 
@@ -31,10 +36,8 @@ class Server():
     server_listener = None
     def on_msg(self, msg, handler):
         if 'join' in msg:
-            self.notify('player_joined', msg['join'], msg['topleft'])
-            self.send_msg(msg)
-        elif 'performed_action' in msg:
-            self.notify('player_performed_action', msg['performed_action'], msg['action'])
+            handler.do_send({'join':handlers[handler]})
+        #elif 'performed_action' in msg:
             #self.send_msg(msg)
         print msg
     
