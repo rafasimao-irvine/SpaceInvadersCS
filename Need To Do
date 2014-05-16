@@ -22,3 +22,18 @@ Server
 - Send the invaders changing directions messages;
 - Send the shoots from the invaders;
 - Keep the scores and send them to the players when it changes;
+
+
+Messages:
+Client:
+-> join ()				<- others_join ()
+-> input ()				<- others_input ()
+-> quit ()				<- other_quit ()
+						<- invaders_move ()
+						
+Server:
+-> player_joined ()		<- player_joined ()
+-> players_input ()		<- players_input ()
+-> player_quit ()		<- player_quit ()
+-> invaders_move ()
+-> invader_died ()
