@@ -2,15 +2,14 @@ import pygame
 from state import State
 from player import Player
 from invaders_manager import InvadersManager
-from network_connector import NetworkListener
 #from Invaders import Invaders
 
-import hashlib
+from server import server, ServerListener
 
 '''
 Main game state. Might be the class where the whole game will run at.
 '''
-class StateGameServer(State, NetworkListener):
+class StateGameServer(State, ServerListener):
 
     #Game started check
     game_started = False
@@ -21,9 +20,8 @@ class StateGameServer(State, NetworkListener):
     #invader = Invaders(0)
     invader_manager = InvadersManager()
 
-    def __init__(self, screen, inputManager, networkConnector):
-        State.__init__(self, screen, inputManager, networkConnector)
-        self.networkConnector.attach(self) #attach to the network handler
+    def __init__(self, screen, inputManager):
+        State.__init__(self, screen, inputManager)
         
         self.board_bounds = pygame.Rect(0,0,screen.get_width(),screen.get_height())
         
@@ -31,7 +29,7 @@ class StateGameServer(State, NetworkListener):
         
         
     def destroy(self):
-        self.networkConnector.detach(self)
+        pass
     
     
     '''Update'''
@@ -110,7 +108,7 @@ class StateGameServer(State, NetworkListener):
     '''***** Network receivers: *****'''
     
     def player_joined(self, player_ip, topleft):
-        NetworkListener.player_joined(self, player_ip, topleft)
+        ServerListener.player_joined(self, player_ip, topleft)
         
         player = Player()
         player.box.topleft = topleft
@@ -121,7 +119,7 @@ class StateGameServer(State, NetworkListener):
         
         
     def player_performed_action(self, player_ip, action):
-        NetworkListener.player_performed_action(self, player_ip, action)
+        ServerListener.player_performed_action(self, player_ip, action)
         
         player = None
         for p in self.players_list:

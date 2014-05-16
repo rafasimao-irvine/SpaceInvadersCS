@@ -6,8 +6,8 @@ Created on Apr 15, 2014
 @author: ryanp
 '''
 class StateGameIntro(State):
-    def __init__(self, start, screen, inputManager, networkConnector): 
-        State.__init__(self, screen, inputManager, networkConnector)
+    def __init__(self, start, screen, inputManager): 
+        State.__init__(self, screen, inputManager)
         
         self.start = start
         

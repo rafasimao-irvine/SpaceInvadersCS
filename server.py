@@ -1,7 +1,6 @@
-from network import Handler, Listener
+from network import Handler, poll, Listener
 #from threading import Thread, Lock
 
-from network_connector import NetworkConnector, start_thread
  
 handlers = {}  # map client handler to user name
 server = None
@@ -26,10 +25,10 @@ class ServerHandler(Handler):
 
     
 
-class Server(NetworkConnector):
+class Server():
     
     global handlers
-    
+    server_listener = None
     def on_msg(self, msg, handler):
         if 'join' in msg:
             self.notify('player_joined', msg['join'], msg['topleft'])
@@ -52,13 +51,33 @@ class Server(NetworkConnector):
 
 
 '''Starts the server connection'''
-def start_server():
+def start_server(server_listener):
     global server
     
     port = 8888
     Listener(port, ServerHandler)
     server = Server()
     
-    start_thread()
+    server.server_listener = server_listener
+    #start_thread()
     
     return server
+
+
+'''Keep polling'''
+def periodic_poll():
+    poll(timeout=0.05)  # seconds
+    
+    
+    
+'''ServerListener abstract class, must be extended to receive a message at the network'''
+class ServerListener(object):
+    
+    def player_joined(self, player_ip, topleft): pass
+    def player_left(self, player_ip): pass
+    def player_performed_action(self, player_ip, action): pass
+    
+    def player_new_score(self, score): pass
+
+    def invaders_changed_direction(self, new_direction): pass
+    def invaders_shoot(self, topleft): pass

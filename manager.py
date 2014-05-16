@@ -3,7 +3,7 @@ from input_manager import InputManager
 from state_game_intro import StateGameIntro
 from state_game import StateGame
 
-from client import start_client
+from client import start_client, periodic_poll
 
 #initiate the pygame
 pygame.init()
@@ -20,15 +20,16 @@ class Manager:
     screen  = pygame.display.set_mode(size)
 
     pygame.display.set_caption("SpaceInvaders")        
-    
-    #NetworkHandler
-    networkConnector = start_client()
-    
+
     #InputManager
     inputManager = InputManager()
+    
+    game_state = StateGame(screen, inputManager)
+    #NetworkHandler
+    client = start_client(game_state)
 
     #Introduction state
-    state = StateGameIntro(0, screen, inputManager, networkConnector)
+    state = StateGameIntro(0, screen, inputManager)
     
     #Game started check
     game_started = False
@@ -39,12 +40,15 @@ class Manager:
         while self.gameOn:
             dt = fpsClock.tick(30)
 
+            #Network
+            periodic_poll()
+
             #Inputs
             self.inputManager.update()
             
             if self.game_started == False:
                 if self.state.start == 100:
-                    self.set_state(StateGame(self.screen, self.inputManager, self.networkConnector))
+                    self.set_state(self.game_state)
                     self.game_started = True
             
             #Updates
