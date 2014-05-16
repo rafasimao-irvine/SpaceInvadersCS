@@ -3,6 +3,9 @@ from threading import Thread
 
 client = None
 
+def get_client():
+    return client
+
 class Client(Handler):
     
     client_listener = None

@@ -6,7 +6,7 @@ from player import Player
 from invaders_manager import InvadersManager
 #from Invaders import Invaders
 
-from client import client, ClientListener
+from client import get_client, ClientListener
 
 '''
 Main game state. Might be the class where the whole game will run at.
@@ -166,40 +166,34 @@ class StateGame(State, InputListener, ClientListener):
       
     'Receives inputs and treats them if they corresponds to moving or firing'
     def receive_input(self, event):
-        
-        #my_ip = self.networkConnector.my_ip
+        client = get_client()
+        my_id = client.my_id
         #Starts moving
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_a:
                 self.player.move_left(True)
-                #self.networkConnector.send_msg(
-                #    {'performed_action':my_ip, 'action':'keydown_left'})
+                client.do_send({'performed_action':my_id, 'action':'keydown_left'})
             elif event.key == pygame.K_d:
                 self.player.move_right(True)
-                #self.networkConnector.send_msg(
-                #    {'performed_action':my_ip, 'action':'keydown_right'})
+                client.do_send({'performed_action':my_id, 'action':'keydown_right'})
         #Finishes moving
         elif event.type == pygame.KEYUP:
             if event.key == pygame.K_a:
                 self.player.move_left(False)
-                #self.networkConnector.send_msg(
-                #    {'performed_action':my_ip, 'action':'keyup_left'})
+                client.do_send({'performed_action':my_id, 'action':'keyup_left'})
             elif event.key == pygame.K_d:
                 self.player.move_right(False)
-                #self.networkConnector.send_msg(
-                #    {'performed_action':my_ip, 'action':'keyup_right'})
+                client.do_send({'performed_action':my_id, 'action':'keyup_right'})
         #Starts firing projectile
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE:
                 self.player.fire_shot(True)
-                #self.networkConnector.send_msg(
-                #    {'performed_action':my_ip, 'action':'keydown_fire'})
+                client.do_send({'performed_action':my_id, 'action':'keydown_fire'})
         #Finishes firing projectile
         elif event.type == pygame.KEYUP:
             if event.key == pygame.K_SPACE:
                 self.player.fire_shot(False)
-                #self.networkConnector.send_msg(
-                #    {'performed_action':my_ip, 'action':'keyup_fire'})    
+                client.do_send({'performed_action':my_id, 'action':'keyup_fire'})
     
     
         

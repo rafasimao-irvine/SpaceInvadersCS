@@ -5,6 +5,9 @@ from network import Handler, poll, Listener
 handlers = {}  # map client handler to user name
 server = None
 
+def get_server():
+    return server
+
 class ServerHandler(Handler):
     
     global handlers, server
@@ -34,10 +37,12 @@ class Server():
     global handlers
     server_listener = None
     def on_msg(self, msg, handler):
+        server_listener = self.server_listener
         if 'join' in msg:
             handler.do_send({'join':handlers[handler]})
-            self.server_listener.player_joined(handlers[handler], msg['join'])
-        #elif 'performed_action' in msg:
+            server_listener.player_joined(handlers[handler], msg['join'])
+        elif 'performed_action' in msg:
+            server_listener.player_performed_action(msg['performed_action'], msg['action'])
             #self.send_msg(msg)
         print msg
     
