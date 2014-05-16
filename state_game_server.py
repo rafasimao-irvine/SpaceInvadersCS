@@ -15,7 +15,6 @@ class StateGameServer(State, ServerListener):
     game_started = False
     
     #List of players
-    #players_list = list()
     players_list = {}
     #invader = Invaders(0)
     invader_manager = InvadersManager()
@@ -107,12 +106,12 @@ class StateGameServer(State, ServerListener):
     
     '''***** Network receivers: *****'''
     
-    def player_joined(self, player_ip, topleft):
-        ServerListener.player_joined(self, player_ip, topleft)
+    def player_joined(self, player_id, topleft):
+        ServerListener.player_joined(self, player_id, topleft)
         
         player = Player()
         player.box.topleft = topleft
-        self.players_list[player] = player_ip
+        self.players_list[player] = player_id
         
         self.game_started = True
         #print "player_joined: "+str(player_ip)+" - "+str(topleft)

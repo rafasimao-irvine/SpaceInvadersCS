@@ -25,7 +25,6 @@ _ids = 0
 def generate_id():
     global _ids
     _ids += 1
-    print _ids
     return _ids
 
     
@@ -37,6 +36,7 @@ class Server():
     def on_msg(self, msg, handler):
         if 'join' in msg:
             handler.do_send({'join':handlers[handler]})
+            self.server_listener.player_joined(handlers[handler], msg['join'])
         #elif 'performed_action' in msg:
             #self.send_msg(msg)
         print msg
@@ -76,7 +76,7 @@ def periodic_poll():
 '''ServerListener abstract class, must be extended to receive a message at the network'''
 class ServerListener(object):
     
-    def player_joined(self, player_ip, topleft): pass
+    def player_joined(self, player_id, topleft): pass
     def player_left(self, player_ip): pass
     def player_performed_action(self, player_ip, action): pass
     

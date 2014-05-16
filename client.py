@@ -7,6 +7,7 @@ class Client(Handler):
     
     client_listener = None
     connected = False
+    my_id = 0
     my_ip = get_my_ip()
     def on_open(self):
         self.connected = True
@@ -17,6 +18,8 @@ class Client(Handler):
         print "****** Disconnected from server ******"
     
     def on_msg(self, msg):
+        if 'join' in msg:
+            self.my_id = msg['join']
         print msg
     
 
