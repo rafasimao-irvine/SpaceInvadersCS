@@ -90,7 +90,7 @@ class StateGame(State, InputListener, ClientListener):
                     #collided = False
                     #for player in self.players_list:
                     if shot.is_colliding_with(self.player):
-                        self.player.receive_hit()
+                        #self.player.receive_hit()
                         #collided = True
                     #if collided:
                         self.invader_manager.projectile_list.remove(shot)
@@ -167,7 +167,8 @@ class StateGame(State, InputListener, ClientListener):
     'Receives inputs and treats them if they corresponds to moving or firing'
     def receive_input(self, event):
         client = get_client()
-        my_id = client.my_id
+        if client:
+            my_id = client.my_id
         #Starts moving
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_a:
@@ -208,3 +209,5 @@ class StateGame(State, InputListener, ClientListener):
         
         #self.players_list[player] = player_ip
         
+    def invaders_changed_direction(self, new_direction, invaders_position, how_many_moves):
+        self.invader_manager.changed_direction(new_direction, invaders_position, how_many_moves)

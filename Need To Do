@@ -29,11 +29,11 @@ Client:
 -> join ()				<- others_join ()
 -> input ()				<- others_input ()
 -> quit ()				<- other_quit ()
-						<- invaders_move ()
+						<- invaders_change_direction ()
 						
 Server:
--> player_joined ()		<- player_joined ()
--> players_input ()		<- players_input ()
+-> player_joined ()		<- player_joined (X)
+-> players_input ()		<- players_input (X)
 -> player_quit ()		<- player_quit ()
--> invaders_move ()
--> invader_died ()
+-> invaders_died ()		<- invaders_fire ()
+-> invaders_change_direction (X)

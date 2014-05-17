@@ -18,6 +18,8 @@ class StateGameServer(State, ServerListener):
     players_list = {}
     #invader = Invaders(0)
     invader_manager = InvadersManager()
+    
+    frame_counter = 0
 
     def __init__(self, screen, inputManager):
         State.__init__(self, screen, inputManager)

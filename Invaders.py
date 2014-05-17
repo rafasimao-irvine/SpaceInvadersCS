@@ -17,6 +17,8 @@ random.seed()
 
 class Invaders(GameObject):
     
+    changed_direction = False
+    
     movingRight=0
     movingDownFromRight=1
     movingLeft=2
@@ -112,11 +114,13 @@ class Invaders(GameObject):
         if self.direction > 3:
             self.direction = 0
 
-       
         if self.direction == self.movingDownFromRight or self.direction == self.movingDownFromLeft:
             self.howManyMoves = self.max_down_move
         else:
             self.howManyMoves = self.max_side_move
+            
+        Invaders.changed_direction = True
+
                             
     def render(self, screen):
         pygame.draw.rect(screen, pygame.Color(230,230,230), 

@@ -23,6 +23,10 @@ class Client(Handler):
     def on_msg(self, msg):
         if 'join' in msg:
             self.my_id = msg['join']
+        elif 'invaders_changed_direction' in msg:
+            self.client_listener.invaders_changed_direction(
+                                       msg['invaders_changed_direction'], 
+                                       msg['position'], msg['how_many_moves'])
         print msg
     
 
@@ -33,7 +37,7 @@ def start_client(client_listener):
     host, port = 'localhost', 8888
     client = Client(host, port)
     client.client_listener = client_listener
-    
+        
     #client.do_send({'join':'JOINED!'})
 
     #start_thread()
@@ -61,5 +65,5 @@ class ClientListener(object):
     
     def player_new_score(self, score): pass
 
-    def invaders_changed_direction(self, new_direction): pass
+    def invaders_changed_direction(self, new_direction, invaders_position, how_many_moves): pass
     def invaders_shoot(self, topleft): pass
