@@ -47,7 +47,7 @@ class StateGameServer(State, ServerListener):
 
                 #treats projectiles hits        
                 self._treat_invader_projectiles()
-                self._treat_players_projectiles()
+                #self._treat_players_projectiles()
         
     'Make invaders projectiles collisions and perform the consequences'
     def _treat_invader_projectiles(self):
@@ -113,6 +113,14 @@ class StateGameServer(State, ServerListener):
         self.invader_manager.render(self.screen)
         
     
+    '''***** Network helper: *****'''
+    def get_player_with_id(self, player_id):
+        for p in self.players_list:
+            if self.players_list[p] == player_id:
+                return p
+        
+        return None
+    
     '''***** Network receivers: *****'''
     
     def player_joined(self, player_id, topleft):
@@ -134,10 +142,7 @@ class StateGameServer(State, ServerListener):
     def player_performed_action(self, player_id, action):
         print str(player_id)
         
-        player = None
-        for p in self.players_list:
-            if self.players_list[p] == player_id:
-                player = p
+        player = self.get_player_with_id(player_id)
                 
         if player != None:
             if action == 'keydown_left':
@@ -155,3 +160,31 @@ class StateGameServer(State, ServerListener):
                 
         server = get_server()
         server.send_msg({'player_performed_action':player_id, 'action':action})
+        
+    def invaders_hit(self, player_id, invader):
+        server = get_server()
+        
+        player = self.get_player_with_id(player_id)
+        
+        if player != None:
+            invader_box = self.invader_manager.invaders_list[invader].box
+            radius = 10000
+            if player.projectile_list.__len__() > 0: 
+                #Goes through all the invaders projectiles
+                for shot in player.projectile_list:
+                    x_dif = shot.box.x - invader_box.x
+                    y_dif = shot.box.y - invader_box.y
+                    distance = x_dif*x_dif + y_dif*y_dif
+                    print str(distance)+" "+str(radius)
+                    if distance < radius:
+                        player.increase_score(15)
+                        self.invader_manager.invaders_list.remove(self.invader_manager.invaders_list[invader])
+                        # tell that the invader died
+                        server.send_msg({'invaders_hit_response':invader, 
+                                         'score':player.score}, self.players_list[player])
+                        server.send_msg({'invaders_died':invader})
+                        # finish procedure
+                        return
+            
+            server.send_msg({'invaders_hit_response':invader, 
+                             'score':0}, self.players_list[player])    

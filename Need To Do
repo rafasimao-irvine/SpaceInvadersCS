@@ -29,6 +29,8 @@ Client:
 -> join (X)				<- others_join (X)
 -> input (X)			<- others_input (X)
 -> quit ()				<- other_quit ()
+-> invaders_died (X)	<- invaders_died (X)
+						<- invaders_fire (X)
 						<- invaders_change_direction (X)
 						<- joined ()
 						

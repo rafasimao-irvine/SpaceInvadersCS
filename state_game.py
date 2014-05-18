@@ -8,6 +8,7 @@ from invaders_manager import InvadersManager
 from projectile import Projectile
 
 from client import get_client, ClientListener
+from server import get_server
 
 '''
 Main game state. Might be the class where the whole game will run at.
@@ -108,10 +109,16 @@ class StateGame(State, InputListener, ClientListener):
                         for invader in self.invader_manager.invaders_list:
                             if not collided and shot.is_colliding_with(invader):
                                 player.projectile_list.remove(shot)
+                                collided = True                 
+
+                                if player == self.player:
+                                    invader.marked = True
+                                    client = get_client()
+                                    client.do_send({'invaders_hit':self.players_list[player],
+                                                    'invader': self.invader_manager.invaders_list.index(invader)})
                                 #self.invader_manager.invaders_list.remove(invader)
                                 #player.increase_score(15)
                                 #self.invader_manager.speedUp()
-                                collided = True                 
                     
     'Removes a projectile from a projectile list if it is out of the board bounds.' 
     'Returns True if it is removed and False if it is not.'
@@ -234,6 +241,12 @@ class StateGame(State, InputListener, ClientListener):
                 elif action == 'keyup_fire':
                     player.fire_shot(False)
         
+    def invaders_hit_response(self, invader, score):
+        if score < 1:
+            self.invader_manager.invaders_list[invader].marked = False
+        else:
+            self.player.score = score
+        
     def invaders_changed_direction(self, new_direction, invaders_position, how_many_moves):
         self.invader_manager.changed_direction(new_direction, invaders_position, how_many_moves)
         
@@ -241,7 +254,6 @@ class StateGame(State, InputListener, ClientListener):
         self.invader_manager.projectile_list.append(
                             Projectile(projectile[0],projectile[1],projectile[2]))
         
-    def invaders_died(self, invader, score):
+    def invaders_died(self, invader):
         self.invader_manager.invaders_list.remove(self.invader_manager.invaders_list[invader])
-        self.player.score = score
         

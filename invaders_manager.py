@@ -90,7 +90,8 @@ class InvadersManager():
 
         if self.invaders_list.__len__() > 0: 
             for invader in self.invaders_list:
-                invader.render(screen)
+                if not invader.marked:
+                    invader.render(screen)
     
     def speedUp(self):
         for i in self.invaders_list:

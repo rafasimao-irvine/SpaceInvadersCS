@@ -53,6 +53,8 @@ class Invaders(GameObject):
         
         self.shotDelay = random.randrange(1000,5000)
         self.timeSinceLastShot = 0
+        
+        self.marked = False
     
         '''
     Move changes the position of the invader by taking its current position, and adds the current

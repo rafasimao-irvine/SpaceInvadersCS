@@ -43,6 +43,8 @@ class Server():
         elif 'player_performed_action' in msg:
             server_listener.player_performed_action(msg['player_performed_action'], msg['action'])
             #self.send_msg(msg)
+        elif 'invaders_hit' in msg:
+            server_listener.invaders_hit(msg['invaders_hit'], msg['invader'])
         #print msg
     
     def send_msg(self, msg, client_id = 0):
@@ -91,4 +93,6 @@ class ServerListener(object):
     def player_joined(self, player_id, topleft): pass
     def player_left(self, player_id): pass
     def player_performed_action(self, player_id, action): pass
+    
+    def invaders_hit(self, player_id, invader): pass
     
