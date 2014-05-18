@@ -109,8 +109,8 @@ class StateGame(State, InputListener, ClientListener):
                     for invader in self.invader_manager.invaders_list:
                         if not collided and shot.is_colliding_with(invader):
                             player.projectile_list.remove(shot)
-                            self.invader_manager.invaders_list.remove(invader)
-                            player.increase_score(15)
+                            #self.invader_manager.invaders_list.remove(invader)
+                            #player.increase_score(15)
                             #self.invader_manager.speedUp()
                             collided = True                 
                     
@@ -214,5 +214,10 @@ class StateGame(State, InputListener, ClientListener):
         self.invader_manager.changed_direction(new_direction, invaders_position, how_many_moves)
         
     def invaders_shoot(self, projectile):
-        self.invader_manager.projectile_list.append(Projectile(projectile[0],projectile[1],projectile[2]))
+        self.invader_manager.projectile_list.append(
+                            Projectile(projectile[0],projectile[1],projectile[2]))
+        
+    def invaders_died(self, invader, score):
+        self.invader_manager.invaders_list.remove(self.invader_manager.invaders_list[invader])
+        self.player.score = score
         

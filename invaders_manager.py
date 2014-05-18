@@ -60,9 +60,9 @@ class InvadersManager():
                 
     def update_invaders(self, dt):
         if self.invaders_list.__len__() > 0: 
+            self.move_block()
             for invader in self.invaders_list:
                 invader.update(dt)
-            self.move_block()
         else:
             self.new_wave_of_invaders()
     
@@ -76,13 +76,11 @@ class InvadersManager():
         elif direction == Invaders.movingLeft:
             self.block_position[0] -= mvmtSpeed
             
-    def move_all_invaders(self): pass
-    
     def new_wave_of_invaders(self):
         self.wave_number += 1
         self._create_block_of_invaders()
         self.speedUp()
-        self.block_position = (0,0)
+        self.block_position = [0,0]
         
 
     def render(self, screen):

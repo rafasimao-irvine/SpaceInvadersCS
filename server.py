@@ -46,9 +46,17 @@ class Server():
             #self.send_msg(msg)
         print msg
     
-    def send_msg(self, msg):
+    def send_msg(self, msg, client_id = 0):
         #if handlers.__len__()>0:
-        self._send_to_all_users(msg)
+        if client_id:
+            self._send_to_id(msg, client_id)
+        else:
+            self._send_to_all_users(msg)
+
+    def _send_to_id(self, msg, client_id):
+        for h in handlers:
+            if handlers[h] == client_id:
+                h.do_send(msg)
 
     def _send_to_all_users(self, msg):
         #lock = Lock()

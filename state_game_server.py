@@ -4,7 +4,7 @@ from player import Player
 from invaders_manager import InvadersManager
 #from Invaders import Invaders
 
-from server import server, ServerListener
+from server import ServerListener, get_server
 
 '''
 Main game state. Might be the class where the whole game will run at.
@@ -77,11 +77,18 @@ class StateGameServer(State, ServerListener):
                         for invader in self.invader_manager.invaders_list:
                             if not collided and shot.is_colliding_with(invader):
                                 player.projectile_list.remove(shot)
-                                self.invader_manager.invaders_list.remove(invader)
                                 player.increase_score(15)
                                 #self.invader_manager.speedUp()
                                 collided = True
-                        
+                                
+                                #send to the client
+                                server = get_server()
+                                if server:
+                                    server.send_msg(
+                                            {'invaders_died':self.invader_manager.invaders_list.index(invader), 
+                                            'score':player.score}, self.players_list[player])
+                                #then removes the invader
+                                self.invader_manager.invaders_list.remove(invader)
                     
     'Removes a projectile from a projectile list if it is out of the board bounds.' 
     'Returns True if it is removed and False if it is not.'

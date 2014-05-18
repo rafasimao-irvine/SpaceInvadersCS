@@ -51,7 +51,7 @@ class Invaders(GameObject):
         self.direction = self.movingRight
         self.mvmtSpeed = 4
         
-        self.shotDelay = random.randrange(10000,15000)
+        self.shotDelay = random.randrange(1000,5000)
         self.timeSinceLastShot = 0
     
         '''
