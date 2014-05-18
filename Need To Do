@@ -27,13 +27,14 @@ Server
 Messages:
 Client:
 -> join ()				<- others_join ()
--> input ()				<- others_input ()
+-> input (X)			<- others_input ()
 -> quit ()				<- other_quit ()
-						<- invaders_change_direction ()
+						<- invaders_change_direction (X)
 						
 Server:
 -> player_joined ()		<- player_joined (X)
 -> players_input ()		<- players_input (X)
 -> player_quit ()		<- player_quit ()
--> invaders_died ()		<- invaders_fire ()
+-> invaders_fire (X)
+-> invaders_died ()
 -> invaders_change_direction (X)

@@ -14,6 +14,7 @@ from projectile import Projectile
 from game_object import GameObject
 random.seed()
 
+from server import get_server
 
 class Invaders(GameObject):
     
@@ -50,7 +51,7 @@ class Invaders(GameObject):
         self.direction = self.movingRight
         self.mvmtSpeed = 4
         
-        self.shotDelay = random.randrange(1000,3000)
+        self.shotDelay = random.randrange(10000,15000)
         self.timeSinceLastShot = 0
     
         '''
@@ -92,7 +93,11 @@ class Invaders(GameObject):
             self.timeSinceLastShot = 0
             
             self.projectile_list.append(Projectile(self.box.x+12.25, self.box.y+15, 0.4))
-        
+            
+            server = get_server()
+            if server:
+                server.send_msg({'invaders_shoot':[self.box.x+12.25, self.box.y+15, 0.4]})
+            
         #increases the fire time    
         else:
             self.timeSinceLastShot = self.timeSinceLastShot + dt
@@ -102,7 +107,8 @@ class Invaders(GameObject):
     '''
     def update(self, dt):
         self._move(dt)
-        self._shoot(dt)
+        if get_server():
+            self._shoot(dt)
         #if self.projectile_list.__len__() > 0: 
         #    for shot in self.projectile_list:
         #        shot.move()

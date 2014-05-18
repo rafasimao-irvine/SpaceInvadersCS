@@ -5,6 +5,7 @@ from input_listener import InputListener
 from player import Player
 from invaders_manager import InvadersManager
 #from Invaders import Invaders
+from projectile import Projectile
 
 from client import get_client, ClientListener
 
@@ -211,3 +212,7 @@ class StateGame(State, InputListener, ClientListener):
         
     def invaders_changed_direction(self, new_direction, invaders_position, how_many_moves):
         self.invader_manager.changed_direction(new_direction, invaders_position, how_many_moves)
+        
+    def invaders_shoot(self, projectile):
+        self.invader_manager.projectile_list.append(Projectile(projectile[0],projectile[1],projectile[2]))
+        

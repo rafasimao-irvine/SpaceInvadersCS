@@ -27,6 +27,9 @@ class Client(Handler):
             self.client_listener.invaders_changed_direction(
                                        msg['invaders_changed_direction'], 
                                        msg['position'], msg['how_many_moves'])
+        elif 'invaders_shoot' in msg:
+            self.client_listener.invaders_shoot(msg['invaders_shoot'])
+            
         print msg
     
 
@@ -66,4 +69,4 @@ class ClientListener(object):
     def player_new_score(self, score): pass
 
     def invaders_changed_direction(self, new_direction, invaders_position, how_many_moves): pass
-    def invaders_shoot(self, topleft): pass
+    def invaders_shoot(self, projectile): pass
