@@ -23,6 +23,9 @@ class Client(Handler):
     def on_msg(self, msg):
         if 'join' in msg:
             self.my_id = msg['join']
+            self.client_listener.joined(msg['join'])
+        elif 'player_joined' in msg:
+            self.client_listener.player_joined(msg['player_joined'], msg['topleft'])
         elif 'invaders_changed_direction' in msg:
             self.client_listener.invaders_changed_direction(
                                        msg['invaders_changed_direction'], 
@@ -32,7 +35,7 @@ class Client(Handler):
         elif 'invaders_died' in msg:
             self.client_listener.invaders_died(msg['invaders_died'], msg['score'])
             
-        print msg
+        #print msg
     
 
 '''Starts the client connection'''                            
@@ -64,9 +67,11 @@ def start_thread():
 '''ClientListener abstract class, must be extended to receive a message'''
 class ClientListener(object):
     
-    def player_joined(self, player_ip, topleft): pass
-    def player_left(self, player_ip): pass
-    def player_performed_action(self, player_ip, action): pass
+    def joined(self, player_id): pass
+    
+    def player_joined(self, player_id, topleft): pass
+    def player_left(self, player_id): pass
+    def player_performed_action(self, player_id, action): pass
     
     def invaders_died(self, invader, score): pass
 

@@ -39,12 +39,11 @@ class Server():
     def on_msg(self, msg, handler):
         server_listener = self.server_listener
         if 'join' in msg:
-            handler.do_send({'join':handlers[handler]})
             server_listener.player_joined(handlers[handler], msg['join'])
         elif 'performed_action' in msg:
             server_listener.player_performed_action(msg['performed_action'], msg['action'])
             #self.send_msg(msg)
-        print msg
+        #print msg
     
     def send_msg(self, msg, client_id = 0):
         #if handlers.__len__()>0:
@@ -90,10 +89,6 @@ def periodic_poll():
 class ServerListener(object):
     
     def player_joined(self, player_id, topleft): pass
-    def player_left(self, player_ip): pass
-    def player_performed_action(self, player_ip, action): pass
+    def player_left(self, player_id): pass
+    def player_performed_action(self, player_id, action): pass
     
-    def player_new_score(self, score): pass
-
-    def invaders_changed_direction(self, new_direction): pass
-    def invaders_shoot(self, topleft): pass

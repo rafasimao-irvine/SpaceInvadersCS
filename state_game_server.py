@@ -123,15 +123,21 @@ class StateGameServer(State, ServerListener):
         self.players_list[player] = player_id
         
         self.game_started = True
+        
+        # send messages to the others
+        server = get_server()
+        
+        server.send_msg({'join':player_id}, player_id)
+        server.send_msg({'player_joined': player_id, 'topleft': topleft})
         #print "player_joined: "+str(player_ip)+" - "+str(topleft)
         
         
-    def player_performed_action(self, player_ip, action):
-        ServerListener.player_performed_action(self, player_ip, action)
+    def player_performed_action(self, player_id, action):
+        print str(player_id)
         
         player = None
         for p in self.players_list:
-            if self.players_list[p] == player_ip:
+            if self.players_list[p] == player_id:
                 player = p
                 
         if player != None:

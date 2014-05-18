@@ -15,7 +15,7 @@ Main game state. Might be the class where the whole game will run at.
 class StateGame(State, InputListener, ClientListener):
 
     player = Player()
-    #players_list = {}
+    players_list = {}
     #invader = Invaders(0)
     invader_manager = InvadersManager()
 
@@ -23,7 +23,7 @@ class StateGame(State, InputListener, ClientListener):
         State.__init__(self, screen, inputManager)
         inputManager.attach(self)
         
-        #self.players_list[self.player] = networkConnector.my_ip
+        self.players_list[self.player] = None
         
         self.board_bounds = pygame.Rect(0,0,screen.get_width(),screen.get_height())
         
@@ -39,9 +39,9 @@ class StateGame(State, InputListener, ClientListener):
         State.update(self, dt) 
 
         #Updates the game objects
-        self.player.update(dt)
-        #for player in self.players_list:
-        #    player.update(dt)
+        #self.player.update(dt)
+        for player in self.players_list:
+            player.update(dt)
         
         #self.invader.update(dt)
         self.invader_manager.update(dt)
@@ -88,31 +88,30 @@ class StateGame(State, InputListener, ClientListener):
                 #If it is out of the board game box, it is removed
                 if not self._remove_if_out_of_board(self.invader_manager.projectile_list, shot):
                     #If it collides with the player, the player receives the damage and the projectile is removed
-                    #collided = False
-                    #for player in self.players_list:
-                    if shot.is_colliding_with(self.player):
-                        #self.player.receive_hit()
-                        #collided = True
-                    #if collided:
+                    collided = False
+                    for player in self.players_list:
+                        if shot.is_colliding_with(player):
+                            #self.player.receive_hit()
+                            collided = True
+                    if collided:
                         self.invader_manager.projectile_list.remove(shot)
 
     'Make players projectiles collisions and perform the consequences'
     def _treat_players_projectiles(self):
-        player = self.player
-        #for player in self.players_list:
-        if player.projectile_list.__len__() > 0: 
-            #Goes through all the invaders projectiles
-            for shot in player.projectile_list:
-                #If it is out of the board game box, it is removed
-                if not self._remove_if_out_of_board(player.projectile_list, shot):
-                    collided = False
-                    for invader in self.invader_manager.invaders_list:
-                        if not collided and shot.is_colliding_with(invader):
-                            player.projectile_list.remove(shot)
-                            #self.invader_manager.invaders_list.remove(invader)
-                            #player.increase_score(15)
-                            #self.invader_manager.speedUp()
-                            collided = True                 
+        for player in self.players_list:
+            if player.projectile_list.__len__() > 0: 
+                #Goes through all the invaders projectiles
+                for shot in player.projectile_list:
+                    #If it is out of the board game box, it is removed
+                    if not self._remove_if_out_of_board(player.projectile_list, shot):
+                        collided = False
+                        for invader in self.invader_manager.invaders_list:
+                            if not collided and shot.is_colliding_with(invader):
+                                player.projectile_list.remove(shot)
+                                #self.invader_manager.invaders_list.remove(invader)
+                                #player.increase_score(15)
+                                #self.invader_manager.speedUp()
+                                collided = True                 
                     
     'Removes a projectile from a projectile list if it is out of the board bounds.' 
     'Returns True if it is removed and False if it is not.'
@@ -133,9 +132,9 @@ class StateGame(State, InputListener, ClientListener):
             #background
             self.screen.fill(pygame.Color(0,0,0))
         
-            self.player.render(self.screen)
-            #for player in self.players_list:
-            #    player.render(self.screen)
+            #self.player.render(self.screen)
+            for player in self.players_list:
+                player.render(self.screen)
             #self.invader.render(self.screen)
             self.invader_manager.render(self.screen)
             
@@ -201,14 +200,17 @@ class StateGame(State, InputListener, ClientListener):
         
     '''***** Network receivers: *****'''
     
-    def player_joined(self, player_ip, topleft):
-        ClientListener.player_joined(self, player_ip, topleft)
+    def joined(self, player_id):
+        self.players_list[self.player] = player_id
+    
+    def player_joined(self, player_id, topleft):
         
-        player = Player()
-        player.box.topleft = topleft
-        player.color = pygame.Color(randint(80,200),randint(80,200),randint(80,200))
+        if player_id != self.players_list[self.player]:
+            player = Player()
+            player.box.topleft = topleft
+            player.color = pygame.Color(randint(80,200),randint(80,200),randint(80,200))
         
-        #self.players_list[player] = player_ip
+            self.players_list[player] = player_id
         
     def invaders_changed_direction(self, new_direction, invaders_position, how_many_moves):
         self.invader_manager.changed_direction(new_direction, invaders_position, how_many_moves)
