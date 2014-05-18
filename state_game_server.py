@@ -126,7 +126,6 @@ class StateGameServer(State, ServerListener):
         
         # send messages to the others
         server = get_server()
-        
         server.send_msg({'join':player_id}, player_id)
         server.send_msg({'player_joined': player_id, 'topleft': topleft})
         #print "player_joined: "+str(player_ip)+" - "+str(topleft)
@@ -153,3 +152,6 @@ class StateGameServer(State, ServerListener):
                 player.move_right(False)
             elif action == 'keyup_fire':
                 player.fire_shot(False)
+                
+        server = get_server()
+        server.send_msg({'player_performed_action':player_id, 'action':action})

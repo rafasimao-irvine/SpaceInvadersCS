@@ -40,8 +40,8 @@ class Server():
         server_listener = self.server_listener
         if 'join' in msg:
             server_listener.player_joined(handlers[handler], msg['join'])
-        elif 'performed_action' in msg:
-            server_listener.player_performed_action(msg['performed_action'], msg['action'])
+        elif 'player_performed_action' in msg:
+            server_listener.player_performed_action(msg['player_performed_action'], msg['action'])
             #self.send_msg(msg)
         #print msg
     

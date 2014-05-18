@@ -26,6 +26,8 @@ class Client(Handler):
             self.client_listener.joined(msg['join'])
         elif 'player_joined' in msg:
             self.client_listener.player_joined(msg['player_joined'], msg['topleft'])
+        elif 'player_performed_action' in msg:
+            self.client_listener.player_performed_action(msg['player_performed_action'], msg['action'])
         elif 'invaders_changed_direction' in msg:
             self.client_listener.invaders_changed_direction(
                                        msg['invaders_changed_direction'], 
@@ -74,6 +76,5 @@ class ClientListener(object):
     def player_performed_action(self, player_id, action): pass
     
     def invaders_died(self, invader, score): pass
-
     def invaders_changed_direction(self, new_direction, invaders_position, how_many_moves): pass
     def invaders_shoot(self, projectile): pass

@@ -173,28 +173,28 @@ class StateGame(State, InputListener, ClientListener):
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_a:
                 self.player.move_left(True)
-                client.do_send({'performed_action':my_id, 'action':'keydown_left'})
+                client.do_send({'player_performed_action':my_id, 'action':'keydown_left'})
             elif event.key == pygame.K_d:
                 self.player.move_right(True)
-                client.do_send({'performed_action':my_id, 'action':'keydown_right'})
+                client.do_send({'player_performed_action':my_id, 'action':'keydown_right'})
         #Finishes moving
         elif event.type == pygame.KEYUP:
             if event.key == pygame.K_a:
                 self.player.move_left(False)
-                client.do_send({'performed_action':my_id, 'action':'keyup_left'})
+                client.do_send({'player_performed_action':my_id, 'action':'keyup_left'})
             elif event.key == pygame.K_d:
                 self.player.move_right(False)
-                client.do_send({'performed_action':my_id, 'action':'keyup_right'})
+                client.do_send({'player_performed_action':my_id, 'action':'keyup_right'})
         #Starts firing projectile
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE:
                 self.player.fire_shot(True)
-                client.do_send({'performed_action':my_id, 'action':'keydown_fire'})
+                client.do_send({'player_performed_action':my_id, 'action':'keydown_fire'})
         #Finishes firing projectile
         elif event.type == pygame.KEYUP:
             if event.key == pygame.K_SPACE:
                 self.player.fire_shot(False)
-                client.do_send({'performed_action':my_id, 'action':'keyup_fire'})
+                client.do_send({'player_performed_action':my_id, 'action':'keyup_fire'})
     
     
         
@@ -211,6 +211,28 @@ class StateGame(State, InputListener, ClientListener):
             player.color = pygame.Color(randint(80,200),randint(80,200),randint(80,200))
         
             self.players_list[player] = player_id
+        
+    def player_performed_action(self, player_id, action):
+        print str(player_id)
+        if player_id != self.players_list[self.player]:
+            player = None
+            for p in self.players_list:
+                if self.players_list[p] == player_id:
+                    player = p
+                
+            if player != None:
+                if action == 'keydown_left':
+                    player.move_left(True)
+                elif action == 'keydown_right':
+                    player.move_right(True)
+                elif action == 'keydown_fire':
+                    player.fire_shot(True)
+                elif action == 'keyup_left':
+                    player.move_left(False)
+                elif action == 'keyup_right':
+                    player.move_right(False)
+                elif action == 'keyup_fire':
+                    player.fire_shot(False)
         
     def invaders_changed_direction(self, new_direction, invaders_position, how_many_moves):
         self.invader_manager.changed_direction(new_direction, invaders_position, how_many_moves)
