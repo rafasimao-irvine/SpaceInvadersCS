@@ -36,5 +36,5 @@ Server:
 -> players_input ()		<- players_input (X)
 -> player_quit ()		<- player_quit ()
 -> invaders_fire (X)
--> invaders_died ()
+-> invaders_died (X)
 -> invaders_change_direction (X)
