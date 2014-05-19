@@ -45,6 +45,9 @@ class Server():
             #self.send_msg(msg)
         elif 'invaders_hit' in msg:
             server_listener.invaders_hit(msg['invaders_hit'], msg['invader'])
+        elif 'quit' in msg:
+            handler.do_send({'quit':handlers[handler]})
+            self.server_listener.player_left(handlers[handler])
         #print msg
     
     def send_msg(self, msg, client_id = 0):

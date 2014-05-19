@@ -134,6 +134,7 @@ class StateGame(State, InputListener, ClientListener):
     
     '''Render'''
     def render(self):
+        client = get_client()
         if self.player.life > 0:
             State.render(self) 
             #background
@@ -146,8 +147,10 @@ class StateGame(State, InputListener, ClientListener):
             self.invader_manager.render(self.screen)
             
             self.draw_player_score()
-        elif self.player.life <= 0:
-            self.draw_game_over_screen()
+        elif self.player.life <= 0 and client.sent == False:
+            client.do_send({'quit':client.my_id})
+            client.died = True
+            client.sent = True
        
     'Draws the main player score' 
     def draw_player_score(self):

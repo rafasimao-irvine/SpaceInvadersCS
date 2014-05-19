@@ -10,6 +10,8 @@ class Client(Handler):
     
     client_listener = None
     connected = False
+    died = False
+    sent = False
     my_id = 0
     my_ip = get_my_ip()
     def on_open(self):

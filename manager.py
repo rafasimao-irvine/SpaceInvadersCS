@@ -38,27 +38,38 @@ class Manager:
         self.gameOn = True
         
         while self.gameOn:
-            dt = fpsClock.tick(30)
+            try:
+                dt = fpsClock.tick(30)
 
-            #Network
-            periodic_poll()
+                #Network
+                periodic_poll()
 
-            #Inputs
-            self.inputManager.update()
+                #Inputs
+                self.inputManager.update()
             
-            if self.game_started == False:
-                if self.state.start == 100:
-                    self.set_state(self.game_state)
-                    self.game_started = True
-                    if self.client != None:
-                        self.client.do_send({'join':self.game_state.player.box.topleft})
-            
-            #Updates
-            self.update(dt)
+                if self.game_started == False:
+                    if self.state.start == 100:
+                        self.set_state(self.game_state)
+                        self.game_started = True
+                        if self.client != None:
+                            self.client.do_send({'join':self.game_state.player.box.topleft})
+                            
+                #Check if client lost
+                if self.client.died:
+                    self.gameOn = False
+                    self.client.on_close()
                 
-            #Renders, put in the screen
-            self.render()
+                #Updates
+                self.update(dt)
+                
+                #Renders, put in the screen
+                self.render()
+                
+            except (KeyboardInterrupt, SystemExit):
+                self.client.on_close()
         
+        if self.gameOn == False:
+            self.render_gameover()
     
     #Update
     def update(self, dt):
@@ -78,8 +89,10 @@ class Manager:
         
         #updates the display
         pygame.display.update()
-        
-        
+    
+    #Render Game Over screen 
+    def render_gameover(self):
+        self.game_state.draw_game_over_screen()    
 
 #Run the main loop
 if "__main__" == __name__:
