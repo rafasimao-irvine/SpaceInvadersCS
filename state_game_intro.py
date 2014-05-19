@@ -21,7 +21,7 @@ class StateGameIntro(State):
     
     def update(self, dt):
         if self.start != 100:
-            self.start+=5
+            self.start+=2
             
     def render(self):
         self.draw_intro_screen()

@@ -17,7 +17,7 @@ class Manager:
     
     screen  = pygame.display.set_mode(size)
 
-    pygame.display.set_caption("SpaceInvaders")        
+    pygame.display.set_caption("SpaceInvaders - Server")        
     
     #InputManager
     inputManager = InputManager()
