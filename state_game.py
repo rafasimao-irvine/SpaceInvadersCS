@@ -221,6 +221,16 @@ class StateGame(State, InputListener, ClientListener):
             player.color = pygame.Color(randint(80,200),randint(80,200),randint(80,200))
         
             self.players_list[player] = player_id
+    
+    def player_left(self, player_ip):
+        ClientListener.player_left(self, player_ip)
+        
+        print 'player_list before: ' + str(self.players_list.__len__())
+        for p in list(self.players_list):
+            if self.players_list[p] == player_ip:
+                self.players_list.pop(p)
+                
+        print 'player_list after: ' + str(self.players_list.__len__())
         
     def player_performed_action(self, player_id, action):
         print str(player_id)

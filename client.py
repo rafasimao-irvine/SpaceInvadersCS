@@ -28,6 +28,8 @@ class Client(Handler):
             self.client_listener.joined(msg['join'])
         elif 'player_joined' in msg:
             self.client_listener.player_joined(msg['player_joined'], msg['topleft'])
+        elif 'quit' in msg:
+            self.client_listener.player_left(msg['quit'])
         elif 'player_performed_action' in msg:
             self.client_listener.player_performed_action(msg['player_performed_action'], msg['action'])
         elif 'invaders_changed_direction' in msg:
