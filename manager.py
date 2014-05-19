@@ -33,6 +33,10 @@ class Manager:
     
     #Game started check
     game_started = False
+    
+    #Window closed check
+    window_closed = True
+    
     #Main Loop
     def _run(self):
         self.gameOn = True
@@ -66,9 +70,12 @@ class Manager:
                 self.render()
                 
             except (KeyboardInterrupt, SystemExit):
+                self.gameOn = False
+                self.window_closed = True
+                self.client.do_send({'quit':self.client.my_id})
                 self.client.on_close()
         
-        if self.gameOn == False:
+        if self.gameOn == False and self.window_closed == False:
             self.render_gameover()
     
     #Update
