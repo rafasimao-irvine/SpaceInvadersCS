@@ -118,7 +118,7 @@ class InvadersManager():
             
     def new_wave_of_invaders(self):
         self.wave_number += 1
-        self.speedUp()
+        self.speedUp(self.wave_number+1)
         self.block_position = [0,0]
         self.howManyMoves = self.max_side_move
         self.direction = self.movingRight
@@ -127,7 +127,8 @@ class InvadersManager():
          
        
     def speedUp(self, amount = 1.10):
-        self.sideSpeed *= amount
+        self.sideSpeed = self.sideSpeed*amount
+        print " speed "+str(self.sideSpeed)
         
 
     def render(self, screen):
