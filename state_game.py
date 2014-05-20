@@ -256,7 +256,8 @@ class StateGame(State, InputListener, ClientListener):
         
     def invaders_hit_response(self, invader, score):
         if score < 1:
-            self.invader_manager.invaders_list[invader].marked = False
+            if invader < self.invader_manager.invaders_list.__len__():
+                self.invader_manager.invaders_list[invader].marked = False
         else:
             self.player.score = score
         

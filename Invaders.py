@@ -18,12 +18,6 @@ from server import get_server
 
 class Invaders(GameObject):
     
-    changed_direction = False
-    
-    movingRight=0
-    movingDownFromRight=1
-    movingLeft=2
-    movingDownFromLeft=3
     '''
     Invader is going to spawn a new enemy on the screen. It takes how many enemies are spawned,
     then divides that number by the max number of invaders we want on a line  and takes the floor 
@@ -33,7 +27,7 @@ class Invaders(GameObject):
     then subtracting that product from the amount of invaders that have been spawned. We then _move
     this invader over the appropriate amount of spaces.
     '''
-    def __init__(self, projectiles, x, amountOfInvadersSpawned):
+    def __init__(self, projectiles, x, amountOfInvadersSpawned, movement):
         maxInvaders = 5
         #check if there are destroyed invaders you can replace
         temp = amountOfInvadersSpawned/maxInvaders
@@ -45,11 +39,8 @@ class Invaders(GameObject):
         GameObject.__init__(self, self.x, self.y, 30, 30)
         
         self.projectile_list = projectiles
-        self.max_down_move = 200
-        self.max_side_move = 625
-        self.howManyMoves = self.max_side_move
-        self.direction = self.movingRight
-        self.mvmtSpeed = 4
+        
+        self.movement = movement
         
         self.shotDelay = random.randrange(1000,5000)
         self.timeSinceLastShot = 0
@@ -62,29 +53,9 @@ class Invaders(GameObject):
     _move past it during this method call, it should drop down one line and reverse direction.
     '''
     def _move(self, dt):
-        self.howManyMoves = round(self.howManyMoves - self.mvmtSpeed)
+        self.box.x += round(self.movement[0] *dt)
+        self.box.y += round(self.movement[1] *dt)
             
-        if self.direction == self.movingDownFromLeft or self.direction == self.movingDownFromRight:
-            self.box.y = self.box.y + 1
-            self.howManyMoves = self.howManyMoves - 1
-        elif self.direction == self.movingRight:
-            self.box.x = self.box.x + self.mvmtSpeed
-            #self.howManyMoves = self.howManyMoves - 1
-        elif self.direction == self.movingLeft:
-            self.box.x = self.box.x - self.mvmtSpeed
-            #self.howManyMoves = self.howManyMoves - 1
-            
-        if self.howManyMoves < 0:
-            self._next_direction()
-
-    
-    '''
-    speedUp() is called by the manager class, and will make the invaders _move faster when one has 
-    been killed
-    '''
-    def speedUp(self, amount = 1.10):
-        a= self.mvmtSpeed * amount
-        self.mvmtSpeed = a
     
     '''
     _shoot checks to see if a given interval has passed since the last time this invader fired,
@@ -111,25 +82,7 @@ class Invaders(GameObject):
         self._move(dt)
         if get_server():
             self._shoot(dt)
-        #if self.projectile_list.__len__() > 0: 
-        #    for shot in self.projectile_list:
-        #        shot.move()
-        #if self.fire_delay < 15:
-        #    self.fire_delay+=1
     
-    def _next_direction(self):
-        self.direction = self.direction + 1
-        if self.direction > 3:
-            self.direction = 0
-
-        if self.direction == self.movingDownFromRight or self.direction == self.movingDownFromLeft:
-            self.howManyMoves = self.max_down_move
-        else:
-            self.howManyMoves = self.max_side_move
-            
-        Invaders.changed_direction = True
-
-                            
     def render(self, screen):
         pygame.draw.rect(screen, pygame.Color(230,230,230), 
                          (self.box.x, self.box.y, self.box.width, self.box.height))

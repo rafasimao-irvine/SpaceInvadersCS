@@ -180,25 +180,26 @@ class StateGameServer(State, ServerListener):
         
         player = self.get_player_with_id(player_id)
         
-        if player != None:
-            invader_box = self.invader_manager.invaders_list[invader].box
-            radius = 10000
-            if player.projectile_list.__len__() > 0: 
-                #Goes through all the invaders projectiles
-                for shot in player.projectile_list:
-                    x_dif = shot.box.x - invader_box.x
-                    y_dif = shot.box.y - invader_box.y
-                    distance = x_dif*x_dif + y_dif*y_dif
-                    print str(distance)+" "+str(radius)
-                    if distance < radius:
-                        player.increase_score(15)
-                        self.invader_manager.invaders_list.remove(self.invader_manager.invaders_list[invader])
-                        # tell that the invader died
-                        server.send_msg({'invaders_hit_response':invader, 
+        if player != None: 
+            if invader < self.invader_manager.invaders_list.__len__():
+                invader_box = self.invader_manager.invaders_list[invader].box
+                radius = 40000
+                if player.projectile_list.__len__() > 0: 
+                    #Goes through all the invaders projectiles
+                    for shot in player.projectile_list:
+                        x_dif = shot.box.x - invader_box.x
+                        y_dif = shot.box.y - invader_box.y
+                        distance = x_dif*x_dif + y_dif*y_dif
+                        #print str(distance)+" "+str(radius)
+                        if distance < radius:
+                            player.increase_score(15)
+                            self.invader_manager.invaders_list.remove(self.invader_manager.invaders_list[invader])
+                            # tell that the invader died
+                            server.send_msg({'invaders_hit_response':invader, 
                                          'score':player.score}, self.players_list[player])
-                        server.send_msg({'invaders_died':invader})
-                        # finish procedure
-                        return
+                            server.send_msg({'invaders_died':invader})
+                            # finish procedure
+                            return
             
             server.send_msg({'invaders_hit_response':invader, 
                              'score':0}, self.players_list[player])    
