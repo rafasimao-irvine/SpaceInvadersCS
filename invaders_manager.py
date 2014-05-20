@@ -36,7 +36,21 @@ class InvadersManager():
     def _create_block_of_invaders(self):
         for i in range(0, 15):
             self.invaders_list.append(Invaders(self.projectile_list, 100*i, i, self.movement))
-
+      
+    '''--------------------------------------------------------------------'''  
+    def sync_invaders(self, invaders_list, direction):
+        x = 0
+        length = len(invaders_list)
+        while x < length:
+            invader = invaders_list[x]
+            c = Invaders(self.projectile_list, invader[0], invader[1])
+            self.invaders_list.append(c)
+            c.direction = direction
+            x = x + 1
+        self.direction = direction
+    '''--------------------------------------------------------------------'''  
+        
+        
     def update(self, dt):
         self._update_projectiles(dt)
         self._update_invaders(dt)

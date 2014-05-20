@@ -132,10 +132,29 @@ class StateGameServer(State, ServerListener):
         
         self.game_started = True
         
+        #invaders_list = self.invader_manager.invaders_list
+        '''play = 1
+        length = len(self.players_list)
+        while play <= length:
+            ply = self.players_list[play]
+            boxx = py.box.x
+            list_of_players.a
+            play = play + 1'''
+        #list_of_players = {self.players_list[p]: p.box.x for p in self.players_list}
+        #list_of_invaders = list()
+        #for i in  invaders_list:
+        #    add = [i.box.x, i.box.y]
+        #    list_of_invaders.append(add)
+        
         # send messages to the others
         server = get_server()
         server.send_msg({'join':player_id}, player_id)
         server.send_msg({'player_joined': player_id, 'topleft': topleft})
+
+        #server.send_msg({'player_joined': player_id, 
+        #                 'invaders': list_of_invaders,
+        #                 'direction': self.invader_manager.direction,
+        #                 'list_of_players': list_of_players})
         #print "player_joined: "+str(player_ip)+" - "+str(topleft)
         
     def player_left(self, player_id):

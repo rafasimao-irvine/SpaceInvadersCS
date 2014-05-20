@@ -209,7 +209,28 @@ class StateGame(State, InputListener, ClientListener):
     
         
     '''***** Network receivers: *****'''
-    
+    def initialize(self, invaders, players, c, direction):
+        ClientListener.initialize(self, invaders, players, c, direction)
+        
+        client = c
+        self.invader_manager.sync_invaders(invaders, direction)
+        print "players:", players
+        for p in players:
+            print "other client id: ", p
+            print "client id", client.my_id
+            if p == client.my_id:
+                lol = 0
+            else:
+                print "enetered loop"
+                x = players[p]
+                print x
+                plays = Player()
+                plays.box.x = x
+                plays.color = pygame.Color(randint(80,200),randint(80,200),randint(80,200))
+                self.players_list[plays] = p
+        #print self.players_list
+        
+        
     def joined(self, player_id):
         self.players_list[self.player] = player_id
     

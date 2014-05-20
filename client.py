@@ -26,6 +26,15 @@ class Client(Handler):
         if 'join' in msg:
             self.my_id = msg['join']
             self.client_listener.joined(msg['join'])
+            
+            '''
+            joined_player = msg['player_joined']
+            list_of_i = msg['invaders']
+            list_of_p = msg['list_of_players']
+            print list_of_p
+            direction = msg['direction']
+            self.client_listener.initialize(list_of_i, list_of_p, client, direction)
+            '''
         elif 'player_joined' in msg:
             self.client_listener.player_joined(msg['player_joined'], msg['topleft'])
         elif 'quit' in msg:
@@ -74,7 +83,7 @@ def start_thread():
     
 '''ClientListener abstract class, must be extended to receive a message'''
 class ClientListener(object):
-    
+    def initialize(self, players, invaders, client, direction): pass
     def joined(self, player_id): pass
     
     def player_joined(self, player_id, topleft): pass
