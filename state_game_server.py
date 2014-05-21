@@ -194,6 +194,7 @@ class StateGameServer(State, ServerListener):
         
         if player != None: 
             if invader < self.invader_manager.invaders_list.__len__():
+                '''
                 invader_box = self.invader_manager.invaders_list[invader].box
                 radius = 40000
                 if player.projectile_list.__len__() > 0: 
@@ -212,6 +213,13 @@ class StateGameServer(State, ServerListener):
                             server.send_msg({'invaders_died':invader})
                             # finish procedure
                             return
-            
+            '''
+                player.increase_score(15)
+                self.invader_manager.invaders_list.remove(self.invader_manager.invaders_list[invader])
+                server.send_msg({'invaders_hit_response':invader, 
+                                 'score':player.score}, self.players_list[player])
+                server.send_msg({'invaders_died':invader})
+                return
+
             server.send_msg({'invaders_hit_response':invader, 
-                             'score':0}, self.players_list[player])    
+                             'score':0}, self.players_list[player])
