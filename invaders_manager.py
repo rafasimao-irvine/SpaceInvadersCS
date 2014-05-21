@@ -141,9 +141,20 @@ class InvadersManager():
             
         return dead_invaders_numbers
     
+
+    def _set_movement_by_direction(self, direction):
+        if direction == self.movingDownFromRight:
+            self.movement = [0,self.downSpeed]
+        elif direction == self.movingDownFromLeft:
+            self.movement = [0,self.downSpeed]
+        elif direction == self.movingRight:
+            self.movement = [self.sideSpeed,0] 
+        elif direction == self.movingLeft:
+            self.movement = [-self.sideSpeed,0]
+        
             
     '''****** Network Message ******'''
-            
+    
     def changed_direction(self, new_direction, invaders_position, how_many_moves):
         x_offset = y_offset = 0
         block_position = self.block_position
@@ -152,14 +163,7 @@ class InvadersManager():
             y_offset = invaders_position[1] - block_position[1]
             self.block_position = invaders_position
             
-        if new_direction == self.movingDownFromRight:
-            self.movement = [0,self.downSpeed]
-        elif new_direction == self.movingDownFromLeft:
-            self.movement = [0,self.downSpeed]
-        elif new_direction == self.movingRight:
-            self.movement = [self.sideSpeed,0] 
-        elif new_direction == self.movingLeft:
-            self.movement = [-self.sideSpeed,0]
+        self._set_movement_by_direction(new_direction)
             
         self.direction = new_direction
         self.howManyMoves = how_many_moves
@@ -171,16 +175,26 @@ class InvadersManager():
             
             
     def sync_invaders(self, wave_number, block_position, dead_invaders, direction, howManyMoves):
+        # new attributes
         self.block_position = block_position
         self.wave_number = wave_number
         self.direction = direction
         self.howManyMoves = howManyMoves
-        
-        self.speedUp(wave_number)
+
+        # new invaders        
         del self.invaders_list[:]
         self._create_block_of_invaders()
+        
+        
         invaders_to_remove = list()
         for i in dead_invaders:
             invaders_to_remove.append(self.invaders_list[i])
         for r in invaders_to_remove:
             self.invaders_list.remove(r)
+            
+        # new movements
+        self._set_movement_by_direction(direction)
+        self.speedUp(wave_number+1)
+        for invader in self.invaders_list:
+            invader.movement = self.movement
+        
