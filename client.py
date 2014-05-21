@@ -25,18 +25,11 @@ class Client(Handler):
     def on_msg(self, msg):
         if 'join' in msg:
             self.my_id = msg['join']
-            self.client_listener.joined(msg['join'])
-            
-            '''
-            joined_player = msg['player_joined']
-            list_of_i = msg['invaders']
-            list_of_p = msg['list_of_players']
-            print list_of_p
-            direction = msg['direction']
-            self.client_listener.initialize(list_of_i, list_of_p, client, direction)
-            '''
+            self.client_listener.joined(msg['join'], 
+                                        msg['list_of_players'],
+                                        msg['invaders_info'])
         elif 'player_joined' in msg:
-            self.client_listener.player_joined(msg['player_joined'], msg['topleft'])
+            self.client_listener.player_joined(msg['player_joined'], msg['x_pos'])
         elif 'quit' in msg:
             self.client_listener.player_left(msg['quit'])
         elif 'player_performed_action' in msg:
@@ -64,7 +57,6 @@ def start_client(client_listener):
     client.client_listener = client_listener
         
     #client.do_send({'join':'JOINED!'})
-
     #start_thread()
     
     return client
@@ -83,10 +75,10 @@ def start_thread():
     
 '''ClientListener abstract class, must be extended to receive a message'''
 class ClientListener(object):
-    def initialize(self, players, invaders, client, direction): pass
-    def joined(self, player_id): pass
+    #def initialize(self, players, invaders, client, direction): pass
+    def joined(self, player_id, list_of_players, invaders_info): pass
     
-    def player_joined(self, player_id, topleft): pass
+    def player_joined(self, player_id, x_pos): pass
     def player_left(self, player_id): pass
     def player_performed_action(self, player_id, action): pass
     

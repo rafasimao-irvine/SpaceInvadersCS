@@ -209,6 +209,7 @@ class StateGame(State, InputListener, ClientListener):
     
         
     '''***** Network receivers: *****'''
+    '''
     def initialize(self, invaders, players, c, direction):
         ClientListener.initialize(self, invaders, players, c, direction)
         
@@ -229,19 +230,40 @@ class StateGame(State, InputListener, ClientListener):
                 plays.color = pygame.Color(randint(80,200),randint(80,200),randint(80,200))
                 self.players_list[plays] = p
         #print self.players_list
+    ''' 
         
-        
-    def joined(self, player_id):
+    def joined(self, player_id, list_of_players, invaders_info):
         self.players_list[self.player] = player_id
-    
-    def player_joined(self, player_id, topleft):
         
-        if player_id != self.players_list[self.player]:
+        self.invader_manager.sync_invaders(invaders_info['wave_number'],
+                                           invaders_info['block_position'],
+                                           invaders_info['dead_invaders'],
+                                           invaders_info['direction'],
+                                           invaders_info['howManyMoves'])
+        
+        # Add all the other players
+        for p_id in list_of_players:
+            player = self._add_other_player(int(p_id), list_of_players[p_id][0])
+            if player:
+                player.is_moving_right = list_of_players[p_id][1]
+                player.is_moving_left = list_of_players[p_id][2]
+                player.is_firing = list_of_players[p_id][3]
+            
+    
+    def player_joined(self, player_id, x_pos):
+        if self.players_list[self.player] != None:
+            self._add_other_player(player_id, x_pos)
+            
+    def _add_other_player(self, other_player_id, x_pos):
+        if other_player_id != self.players_list[self.player]:
             player = Player()
-            player.box.topleft = topleft
+            player.box.x = x_pos
             player.color = pygame.Color(randint(80,200),randint(80,200),randint(80,200))
         
-            self.players_list[player] = player_id
+            self.players_list[player] = other_player_id
+            return player
+        return None
+    
     
     def player_left(self, player_ip):
         ClientListener.player_left(self, player_ip)

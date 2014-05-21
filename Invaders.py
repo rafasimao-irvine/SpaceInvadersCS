@@ -27,15 +27,17 @@ class Invaders(GameObject):
     then subtracting that product from the amount of invaders that have been spawned. We then _move
     this invader over the appropriate amount of spaces.
     '''
-    def __init__(self, projectiles, x, amountOfInvadersSpawned, movement):
+    def __init__(self, projectiles, block_position, amountOfInvadersSpawned, movement):
         maxInvaders = 5
-        #check if there are destroyed invaders you can replace
+        
+        self.invader_number = amountOfInvadersSpawned
+        
         temp = amountOfInvadersSpawned/maxInvaders
-        self.y = 50 * temp
+        self.y = block_position[1]+ 50 * temp
         temp2 = temp * maxInvaders
         #amountOfInvadersOnThisLine
         aOIOTL = amountOfInvadersSpawned - temp2
-        self.x= 50 * aOIOTL
+        self.x= block_position[0]+ 50 * aOIOTL
         GameObject.__init__(self, self.x, self.y, 30, 30)
         
         self.projectile_list = projectiles

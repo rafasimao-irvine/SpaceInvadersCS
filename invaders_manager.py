@@ -21,11 +21,13 @@ class InvadersManager():
         self.invaders_list = list()
         self.projectile_list = list()
         self.wave_number = 0;
+        self.num_of_invaders_per_wave = 15;
 
         self.max_down_move = 40
         self.max_side_move = 625
         self.howManyMoves = self.max_side_move
         self.direction = self.movingRight
+        self.sideSpeedMultiplier = 0.04
         self.sideSpeed = 0.04
         self.downSpeed = 0.01
         self.movement = [self.sideSpeed,0]
@@ -34,23 +36,9 @@ class InvadersManager():
         self._create_block_of_invaders()
 
     def _create_block_of_invaders(self):
-        for i in range(0, 15):
-            self.invaders_list.append(Invaders(self.projectile_list, 100*i, i, self.movement))
+        for i in range(0, self.num_of_invaders_per_wave):
+            self.invaders_list.append(Invaders(self.projectile_list, self.block_position, i, self.movement))
       
-    '''--------------------------------------------------------------------'''  
-    def sync_invaders(self, invaders_list, direction):
-        x = 0
-        length = len(invaders_list)
-        while x < length:
-            invader = invaders_list[x]
-            c = Invaders(self.projectile_list, invader[0], invader[1])
-            self.invaders_list.append(c)
-            c.direction = direction
-            x = x + 1
-        self.direction = direction
-    '''--------------------------------------------------------------------'''  
-        
-        
     def update(self, dt):
         self._update_projectiles(dt)
         self._update_invaders(dt)
@@ -127,8 +115,7 @@ class InvadersManager():
          
        
     def speedUp(self, amount = 1.10):
-        self.sideSpeed = self.sideSpeed*amount
-        print " speed "+str(self.sideSpeed)
+        self.sideSpeed = self.sideSpeedMultiplier*amount
         
 
     def render(self, screen):
@@ -140,6 +127,19 @@ class InvadersManager():
             for invader in self.invaders_list:
                 if not invader.marked:
                     invader.render(screen)
+    
+    
+    def get_dead_invaders_numbers(self):
+        invaders_list = self.invaders_list
+        dead_invaders_numbers = list()
+        
+        for i in range(0, self.num_of_invaders_per_wave):
+            dead_invaders_numbers.append(i)
+            
+        for invader in invaders_list:
+            dead_invaders_numbers.remove(invader.invader_number)
+            
+        return dead_invaders_numbers
     
             
     '''****** Network Message ******'''
@@ -168,4 +168,19 @@ class InvadersManager():
             invader.box.x += x_offset
             invader.box.y += y_offset
             invader.movement = self.movement
+            
+            
+    def sync_invaders(self, wave_number, block_position, dead_invaders, direction, howManyMoves):
+        self.block_position = block_position
+        self.wave_number = wave_number
+        self.direction = direction
+        self.howManyMoves = howManyMoves
         
+        self.speedUp(wave_number)
+        del self.invaders_list[:]
+        self._create_block_of_invaders()
+        invaders_to_remove = list()
+        for i in dead_invaders:
+            invaders_to_remove.append(self.invaders_list[i])
+        for r in invaders_to_remove:
+            self.invaders_list.remove(r)

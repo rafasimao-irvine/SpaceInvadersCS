@@ -123,39 +123,32 @@ class StateGameServer(State, ServerListener):
     
     '''***** Network receivers: *****'''
     
-    def player_joined(self, player_id, topleft):
-        ServerListener.player_joined(self, player_id, topleft)
+    def player_joined(self, player_id, x_pos):
         
         player = Player()
-        player.box.topleft = topleft
+        player.box.x = x_pos
         self.players_list[player] = player_id
         
         self.game_started = True
         
-        #invaders_list = self.invader_manager.invaders_list
-        '''play = 1
-        length = len(self.players_list)
-        while play <= length:
-            ply = self.players_list[play]
-            boxx = py.box.x
-            list_of_players.a
-            play = play + 1'''
-        #list_of_players = {self.players_list[p]: p.box.x for p in self.players_list}
-        #list_of_invaders = list()
-        #for i in  invaders_list:
-        #    add = [i.box.x, i.box.y]
-        #    list_of_invaders.append(add)
+        list_of_players = {self.players_list[p]: 
+                           [p.box.x, p.is_moving_right, p.is_moving_left, p.is_firing] 
+                           for p in self.players_list}
+        
+        invaders_manager = self.invader_manager
+        invaders_info = {'wave_number': invaders_manager.wave_number,
+                         'block_position': invaders_manager.block_position,
+                         'dead_invaders':invaders_manager.get_dead_invaders_numbers(),
+                         'direction': invaders_manager.direction,
+                         'howManyMoves': invaders_manager.howManyMoves}
         
         # send messages to the others
         server = get_server()
-        server.send_msg({'join':player_id}, player_id)
-        server.send_msg({'player_joined': player_id, 'topleft': topleft})
+        server.send_msg({'join':player_id, 
+                         'list_of_players': list_of_players, 
+                         'invaders_info': invaders_info}, player_id)
+        server.send_msg({'player_joined': player_id, 'x_pos': x_pos})
 
-        #server.send_msg({'player_joined': player_id, 
-        #                 'invaders': list_of_invaders,
-        #                 'direction': self.invader_manager.direction,
-        #                 'list_of_players': list_of_players})
-        #print "player_joined: "+str(player_ip)+" - "+str(topleft)
         
     def player_left(self, player_id):
         ServerListener.player_left(self, player_id)

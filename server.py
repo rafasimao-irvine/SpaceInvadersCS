@@ -93,7 +93,7 @@ def periodic_poll():
 '''ServerListener abstract class, must be extended to receive a message at the network'''
 class ServerListener(object):
     
-    def player_joined(self, player_id, topleft): pass
+    def player_joined(self, player_id, x_pos): pass
     def player_left(self, player_id): pass
     def player_performed_action(self, player_id, action): pass
     
