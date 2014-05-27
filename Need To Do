@@ -42,3 +42,11 @@ Server:
 -> invaders_fire (X)
 -> invaders_died (X)
 -> invaders_change_direction (X)
+
+
+Bugs:
+
+- Run two clients, it seems like the first client joined's player is 
+getting hit on the client side while on the server side, the player is intact when
+playing on the second client screen. 
+
