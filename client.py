@@ -41,9 +41,11 @@ class Client(Handler):
         elif 'invaders_shoot' in msg:
             self.client_listener.invaders_shoot(msg['invaders_shoot'])
         elif 'invaders_died' in msg:
-            self.client_listener.invaders_died(msg['invaders_died'])
+            self.client_listener.invaders_died(msg['invaders_died'], msg['wave_number'])
         elif 'invaders_hit_response' in msg:
-            self.client_listener.invaders_hit_response(msg['invaders_hit_response'], msg['score'])
+            self.client_listener.invaders_hit_response(msg['invaders_hit_response'], 
+                                                       msg['wave_number'], 
+                                                       msg['score'])
             
         #print msg
     
@@ -82,7 +84,7 @@ class ClientListener(object):
     def player_left(self, player_id): pass
     def player_performed_action(self, player_id, action): pass
     
-    def invaders_hit_response(self, invader, score): pass
-    def invaders_died(self, invader): pass
+    def invaders_hit_response(self, invader_number, wave_number, score): pass
+    def invaders_died(self, invader_number, wave_number): pass
     def invaders_changed_direction(self, new_direction, invaders_position, how_many_moves): pass
     def invaders_shoot(self, projectile): pass

@@ -152,6 +152,13 @@ class InvadersManager():
         elif direction == self.movingLeft:
             self.movement = [-self.sideSpeed,0]
         
+    
+    def get_invader_with_number(self, invader_number):
+        for invader in self.invaders_list:
+            if invader.invader_number == invader_number:
+                return invader
+        return None
+    
             
     '''****** Network Message ******'''
     
@@ -197,4 +204,5 @@ class InvadersManager():
         self.speedUp(wave_number+1)
         for invader in self.invaders_list:
             invader.movement = self.movement
+            
         

@@ -115,7 +115,9 @@ class StateGame(State, InputListener, ClientListener):
                                     invader.marked = True
                                     client = get_client()
                                     client.do_send({'invaders_hit':self.players_list[player],
-                                                    'invader': self.invader_manager.invaders_list.index(invader)})
+                                                    'wave_number':self.invader_manager.wave_number,
+                                                    'invader_number': invader.invader_number})
+                                                    #'invader': self.invader_manager.invaders_list.index(invader)})
                                 #self.invader_manager.invaders_list.remove(invader)
                                 #player.increase_score(15)
                                 #self.invader_manager.speedUp()
@@ -297,10 +299,11 @@ class StateGame(State, InputListener, ClientListener):
                 elif action == 'keyup_fire':
                     player.fire_shot(False)
         
-    def invaders_hit_response(self, invader, score):
+    def invaders_hit_response(self, invader_number, wave_number, score):
         if score < 1:
-            if invader < self.invader_manager.invaders_list.__len__():
-                self.invader_manager.invaders_list[invader].marked = False
+            invader = self.invader_manager.get_invader_with_number(invader_number)
+            if invader != None:
+                invader.marked = False
         else:
             self.player.score = score
         
@@ -311,6 +314,10 @@ class StateGame(State, InputListener, ClientListener):
         self.invader_manager.projectile_list.append(
                             Projectile(projectile[0],projectile[1],projectile[2]))
         
-    def invaders_died(self, invader):
-        self.invader_manager.invaders_list.remove(self.invader_manager.invaders_list[invader])
+    def invaders_died(self, invader_number, wave_number):
+        if wave_number == self.invader_manager.wave_number:
+            invader = self.invader_manager.get_invader_with_number(invader_number)
+            if invader != None:
+                self.invader_manager.invaders_list.remove(invader)
+        
         

@@ -187,14 +187,29 @@ class StateGameServer(State, ServerListener):
         server = get_server()
         server.send_msg({'player_performed_action':player_id, 'action':action})
         
-    def invaders_hit(self, player_id, invader):
+    def invaders_hit(self, player_id, wave_number, invader_number):
         server = get_server()
         
         player = self.get_player_with_id(player_id)
+        invader = self.invader_manager.get_invader_with_number(invader_number)
         
-        if player != None: 
+        if player != None:
+            if wave_number == self.invader_manager.wave_number and invader != None:
+                player.increase_score(15)
+                self.invader_manager.invaders_list.remove(invader)
+                server.send_msg({'invaders_hit_response':invader_number,
+                                 'wave_number':wave_number, 
+                                 'score':player.score}, self.players_list[player])
+                server.send_msg({'invaders_died':invader_number,
+                                 'wave_number':wave_number})
+                return
+            else:
+                server.send_msg({'invaders_hit_response':invader_number,
+                                 'wave_number':wave_number,
+                                 'score':0}, self.players_list[player])
+            
+            '''
             if invader < self.invader_manager.invaders_list.__len__():
-                '''
                 invader_box = self.invader_manager.invaders_list[invader].box
                 radius = 40000
                 if player.projectile_list.__len__() > 0: 
@@ -213,7 +228,7 @@ class StateGameServer(State, ServerListener):
                             server.send_msg({'invaders_died':invader})
                             # finish procedure
                             return
-            '''
+                
                 player.increase_score(15)
                 self.invader_manager.invaders_list.remove(self.invader_manager.invaders_list[invader])
                 server.send_msg({'invaders_hit_response':invader, 
@@ -223,3 +238,4 @@ class StateGameServer(State, ServerListener):
 
             server.send_msg({'invaders_hit_response':invader, 
                              'score':0}, self.players_list[player])
+            '''
