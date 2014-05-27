@@ -123,20 +123,32 @@ class StateGameServer(State, ServerListener):
     
     '''***** Network receivers: *****'''
     
-    def player_joined(self, player_id, topleft):
-        ServerListener.player_joined(self, player_id, topleft)
+    def player_joined(self, player_id, x_pos):
         
         player = Player()
-        player.box.topleft = topleft
+        player.box.x = x_pos
         self.players_list[player] = player_id
         
         self.game_started = True
         
+        list_of_players = {self.players_list[p]: 
+                           [p.box.x, p.is_moving_right, p.is_moving_left, p.is_firing] 
+                           for p in self.players_list}
+        
+        invaders_manager = self.invader_manager
+        invaders_info = {'wave_number': invaders_manager.wave_number,
+                         'block_position': invaders_manager.block_position,
+                         'dead_invaders':invaders_manager.get_dead_invaders_numbers(),
+                         'direction': invaders_manager.direction,
+                         'howManyMoves': invaders_manager.howManyMoves}
+        
         # send messages to the others
         server = get_server()
-        server.send_msg({'join':player_id}, player_id)
-        server.send_msg({'player_joined': player_id, 'topleft': topleft})
-        #print "player_joined: "+str(player_ip)+" - "+str(topleft)
+        server.send_msg({'join':player_id, 
+                         'list_of_players': list_of_players, 
+                         'invaders_info': invaders_info}, player_id)
+        server.send_msg({'player_joined': player_id, 'x_pos': x_pos})
+
         
     def player_left(self, player_id):
         ServerListener.player_left(self, player_id)
@@ -175,30 +187,55 @@ class StateGameServer(State, ServerListener):
         server = get_server()
         server.send_msg({'player_performed_action':player_id, 'action':action})
         
-    def invaders_hit(self, player_id, invader):
+    def invaders_hit(self, player_id, wave_number, invader_number):
         server = get_server()
         
         player = self.get_player_with_id(player_id)
+        invader = self.invader_manager.get_invader_with_number(invader_number)
         
         if player != None:
-            invader_box = self.invader_manager.invaders_list[invader].box
-            radius = 10000
-            if player.projectile_list.__len__() > 0: 
-                #Goes through all the invaders projectiles
-                for shot in player.projectile_list:
-                    x_dif = shot.box.x - invader_box.x
-                    y_dif = shot.box.y - invader_box.y
-                    distance = x_dif*x_dif + y_dif*y_dif
-                    print str(distance)+" "+str(radius)
-                    if distance < radius:
-                        player.increase_score(15)
-                        self.invader_manager.invaders_list.remove(self.invader_manager.invaders_list[invader])
-                        # tell that the invader died
-                        server.send_msg({'invaders_hit_response':invader, 
-                                         'score':player.score}, self.players_list[player])
-                        server.send_msg({'invaders_died':invader})
-                        # finish procedure
-                        return
+            if wave_number == self.invader_manager.wave_number and invader != None:
+                player.increase_score(15)
+                self.invader_manager.invaders_list.remove(invader)
+                server.send_msg({'invaders_hit_response':invader_number,
+                                 'wave_number':wave_number, 
+                                 'score':player.score}, self.players_list[player])
+                server.send_msg({'invaders_died':invader_number,
+                                 'wave_number':wave_number})
+                return
+            else:
+                server.send_msg({'invaders_hit_response':invader_number,
+                                 'wave_number':wave_number,
+                                 'score':0}, self.players_list[player])
             
+            '''
+            if invader < self.invader_manager.invaders_list.__len__():
+                invader_box = self.invader_manager.invaders_list[invader].box
+                radius = 40000
+                if player.projectile_list.__len__() > 0: 
+                    #Goes through all the invaders projectiles
+                    for shot in player.projectile_list:
+                        x_dif = shot.box.x - invader_box.x
+                        y_dif = shot.box.y - invader_box.y
+                        distance = x_dif*x_dif + y_dif*y_dif
+                        #print str(distance)+" "+str(radius)
+                        if distance < radius:
+                            player.increase_score(15)
+                            self.invader_manager.invaders_list.remove(self.invader_manager.invaders_list[invader])
+                            # tell that the invader died
+                            server.send_msg({'invaders_hit_response':invader, 
+                                         'score':player.score}, self.players_list[player])
+                            server.send_msg({'invaders_died':invader})
+                            # finish procedure
+                            return
+                
+                player.increase_score(15)
+                self.invader_manager.invaders_list.remove(self.invader_manager.invaders_list[invader])
+                server.send_msg({'invaders_hit_response':invader, 
+                                 'score':player.score}, self.players_list[player])
+                server.send_msg({'invaders_died':invader})
+                return
+
             server.send_msg({'invaders_hit_response':invader, 
-                             'score':0}, self.players_list[player])    
+                             'score':0}, self.players_list[player])
+            '''

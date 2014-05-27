@@ -44,7 +44,7 @@ class Server():
             server_listener.player_performed_action(msg['player_performed_action'], msg['action'])
             #self.send_msg(msg)
         elif 'invaders_hit' in msg:
-            server_listener.invaders_hit(msg['invaders_hit'], msg['invader'])
+            server_listener.invaders_hit(msg['invaders_hit'], msg['wave_number'], msg['invader_number'])
         elif 'quit' in msg:
             handler.do_send({'quit':handlers[handler]})
             self.server_listener.player_left(handlers[handler])
@@ -93,9 +93,9 @@ def periodic_poll():
 '''ServerListener abstract class, must be extended to receive a message at the network'''
 class ServerListener(object):
     
-    def player_joined(self, player_id, topleft): pass
+    def player_joined(self, player_id, x_pos): pass
     def player_left(self, player_id): pass
     def player_performed_action(self, player_id, action): pass
     
-    def invaders_hit(self, player_id, invader): pass
+    def invaders_hit(self, player_id, wave_number, invader_number): pass
     

@@ -115,7 +115,9 @@ class StateGame(State, InputListener, ClientListener):
                                     invader.marked = True
                                     client = get_client()
                                     client.do_send({'invaders_hit':self.players_list[player],
-                                                    'invader': self.invader_manager.invaders_list.index(invader)})
+                                                    'wave_number':self.invader_manager.wave_number,
+                                                    'invader_number': invader.invader_number})
+                                                    #'invader': self.invader_manager.invaders_list.index(invader)})
                                 #self.invader_manager.invaders_list.remove(invader)
                                 #player.increase_score(15)
                                 #self.invader_manager.speedUp()
@@ -209,18 +211,61 @@ class StateGame(State, InputListener, ClientListener):
     
         
     '''***** Network receivers: *****'''
-    
-    def joined(self, player_id):
-        self.players_list[self.player] = player_id
-    
-    def player_joined(self, player_id, topleft):
+    '''
+    def initialize(self, invaders, players, c, direction):
+        ClientListener.initialize(self, invaders, players, c, direction)
         
-        if player_id != self.players_list[self.player]:
+        client = c
+        self.invader_manager.sync_invaders(invaders, direction)
+        print "players:", players
+        for p in players:
+            print "other client id: ", p
+            print "client id", client.my_id
+            if p == client.my_id:
+                lol = 0
+            else:
+                print "enetered loop"
+                x = players[p]
+                print x
+                plays = Player()
+                plays.box.x = x
+                plays.color = pygame.Color(randint(80,200),randint(80,200),randint(80,200))
+                self.players_list[plays] = p
+        #print self.players_list
+    ''' 
+        
+    def joined(self, player_id, list_of_players, invaders_info):
+        self.players_list[self.player] = player_id
+        
+        self.invader_manager.sync_invaders(invaders_info['wave_number'],
+                                           invaders_info['block_position'],
+                                           invaders_info['dead_invaders'],
+                                           invaders_info['direction'],
+                                           invaders_info['howManyMoves'])
+        
+        # Add all the other players
+        for p_id in list_of_players:
+            player = self._add_other_player(int(p_id), list_of_players[p_id][0])
+            if player:
+                player.is_moving_right = list_of_players[p_id][1]
+                player.is_moving_left = list_of_players[p_id][2]
+                player.is_firing = list_of_players[p_id][3]
+            
+    
+    def player_joined(self, player_id, x_pos):
+        if self.players_list[self.player] != None:
+            self._add_other_player(player_id, x_pos)
+            
+    def _add_other_player(self, other_player_id, x_pos):
+        if other_player_id != self.players_list[self.player]:
             player = Player()
-            player.box.topleft = topleft
+            player.box.x = x_pos
             player.color = pygame.Color(randint(80,200),randint(80,200),randint(80,200))
         
-            self.players_list[player] = player_id
+            self.players_list[player] = other_player_id
+            return player
+        return None
+    
     
     def player_left(self, player_ip):
         ClientListener.player_left(self, player_ip)
@@ -254,9 +299,11 @@ class StateGame(State, InputListener, ClientListener):
                 elif action == 'keyup_fire':
                     player.fire_shot(False)
         
-    def invaders_hit_response(self, invader, score):
+    def invaders_hit_response(self, invader_number, wave_number, score):
         if score < 1:
-            self.invader_manager.invaders_list[invader].marked = False
+            invader = self.invader_manager.get_invader_with_number(invader_number)
+            if invader != None:
+                invader.marked = False
         else:
             self.player.score = score
         
@@ -267,6 +314,10 @@ class StateGame(State, InputListener, ClientListener):
         self.invader_manager.projectile_list.append(
                             Projectile(projectile[0],projectile[1],projectile[2]))
         
-    def invaders_died(self, invader):
-        self.invader_manager.invaders_list.remove(self.invader_manager.invaders_list[invader])
+    def invaders_died(self, invader_number, wave_number):
+        if wave_number == self.invader_manager.wave_number:
+            invader = self.invader_manager.get_invader_with_number(invader_number)
+            if invader != None:
+                self.invader_manager.invaders_list.remove(invader)
+        
         
