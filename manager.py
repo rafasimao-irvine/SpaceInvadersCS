@@ -35,7 +35,7 @@ class Manager:
     game_started = False
     
     #Window closed check
-    window_closed = True
+    window_closed = False
     
     #Main Loop
     def _run(self):
@@ -60,6 +60,7 @@ class Manager:
                             
                 #Check if client lost
                 if self.client.died:
+                    print 'set game over'
                     self.gameOn = False
                     self.client.on_close()
                 
@@ -76,6 +77,7 @@ class Manager:
                 self.client.on_close()
         
         if self.gameOn == False and self.window_closed == False:
+            print 'show game over'
             self.render_gameover()
     
     #Update

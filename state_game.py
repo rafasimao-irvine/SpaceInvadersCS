@@ -92,7 +92,7 @@ class StateGame(State, InputListener, ClientListener):
                     collided = False
                     for player in self.players_list:
                         if shot.is_colliding_with(player):
-                            self.player.receive_hit()
+                            player.receive_hit()
                             collided = True
                     if collided:
                         self.invader_manager.projectile_list.remove(shot)
