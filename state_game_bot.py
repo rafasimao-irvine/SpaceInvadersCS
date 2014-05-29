@@ -12,7 +12,7 @@ from client import get_client, ClientListener
 '''
 Main game state. Might be the class where the whole game will run at.
 '''
-class StateGame(State, InputListener, ClientListener):
+class StateGameBot(State, InputListener, ClientListener):
 
     player = Player()
     players_list = {}
@@ -21,7 +21,7 @@ class StateGame(State, InputListener, ClientListener):
 
     def __init__(self, screen, inputManager):
         State.__init__(self, screen, inputManager)
-        inputManager.attach(self)
+        #inputManager.attach(self)
         
         self.players_list[self.player] = None
         
@@ -29,6 +29,12 @@ class StateGame(State, InputListener, ClientListener):
         
         self.fontObj = pygame.font.Font('freesansbold.ttf', 22)
         
+        self.inputs_timer = 0
+        self.inputs_delay = randint(100,300)
+        
+        self.input_actions = [False, # left 
+                              False, # right
+                              False] # fire
         
     def destroy(self):
         self.inputManager.detach(self)
@@ -37,6 +43,8 @@ class StateGame(State, InputListener, ClientListener):
     '''Update'''
     def update(self, dt):
         State.update(self, dt) 
+        
+        self.bot_input_AI_update(dt)
 
         #Updates the game objects
         #self.player.update(dt)
@@ -173,65 +181,56 @@ class StateGame(State, InputListener, ClientListener):
         
         
       
-    '''***** Input receiver: *****'''
-      
-    'Receives inputs and treats them if they corresponds to moving or firing'
-    def receive_input(self, event):
+    '''***** Bot Input AI: *****'''
+    def bot_input_AI_update(self, dt):
+        
+        if self.inputs_timer > self.inputs_delay:
+            self.inputs_timer = 0
+            self.inputs_delay = randint(100,300)
+            self.do_random_movement()
+        else:
+            self.inputs_timer += dt
+    
+    def do_random_movement(self):        
         client = get_client()
         if client:
             my_id = client.my_id
-        #Starts moving
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_a:
+
+        # get random move
+        move = randint(0,2)
+        
+        self.input_actions[move] = not self.input_actions[move] 
+        
+        if self.input_actions[move]:# keydown
+            # Starts moving
+            if move == 0:
                 self.player.move_left(True)
                 client.do_send({'player_performed_action':my_id, 'action':'keydown_left'})
-            elif event.key == pygame.K_d:
+            elif move == 1:
                 self.player.move_right(True)
                 client.do_send({'player_performed_action':my_id, 'action':'keydown_right'})
-        #Finishes moving
-        elif event.type == pygame.KEYUP:
-            if event.key == pygame.K_a:
-                self.player.move_left(False)
-                client.do_send({'player_performed_action':my_id, 'action':'keyup_left'})
-            elif event.key == pygame.K_d:
-                self.player.move_right(False)
-                client.do_send({'player_performed_action':my_id, 'action':'keyup_right'})
-        #Starts firing projectile
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_SPACE:
+            # Starts firing projectile
+            elif move == 2:
                 self.player.fire_shot(True)
                 client.do_send({'player_performed_action':my_id, 'action':'keydown_fire'})
-        #Finishes firing projectile
-        elif event.type == pygame.KEYUP:
-            if event.key == pygame.K_SPACE:
+        else:# keyup
+            # Finishes moving
+            if move == 0:
+                self.player.move_left(False)
+                client.do_send({'player_performed_action':my_id, 'action':'keyup_left'})
+            elif move == 1:
+                self.player.move_right(False)
+                client.do_send({'player_performed_action':my_id, 'action':'keyup_right'})
+            # Finishes firing projectile
+            elif move == 2:
                 self.player.fire_shot(False)
                 client.do_send({'player_performed_action':my_id, 'action':'keyup_fire'})
+            
+        
     
     
         
     '''***** Network receivers: *****'''
-    '''
-    def initialize(self, invaders, players, c, direction):
-        ClientListener.initialize(self, invaders, players, c, direction)
-        
-        client = c
-        self.invader_manager.sync_invaders(invaders, direction)
-        print "players:", players
-        for p in players:
-            print "other client id: ", p
-            print "client id", client.my_id
-            if p == client.my_id:
-                lol = 0
-            else:
-                print "enetered loop"
-                x = players[p]
-                print x
-                plays = Player()
-                plays.box.x = x
-                plays.color = pygame.Color(randint(80,200),randint(80,200),randint(80,200))
-                self.players_list[plays] = p
-        #print self.players_list
-    ''' 
         
     def joined(self, player_id, list_of_players, invaders_info):
         self.players_list[self.player] = player_id
