@@ -45,7 +45,7 @@ class Manager:
             self.update(dt)
                 
             #Renders, put in the screen
-            self.render()
+            #self.render()
         
     
     #Update

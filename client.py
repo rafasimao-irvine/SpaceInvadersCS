@@ -54,7 +54,7 @@ class Client(Handler):
 def start_client(client_listener):
     global client
     
-    host, port = 'localhost', 8888
+    host, port = '169.234.11.241', 8888
     client = Client(host, port)
     client.client_listener = client_listener
         
